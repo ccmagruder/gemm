@@ -1,0 +1,14 @@
+services:
+  runner:
+    image: ccmagruder/runner:latest
+    build:
+      dockerfile: Dockerfile
+      context: .runner
+    environment:
+      - REPO=ccmagruder/gemm
+    secrets:
+      - token
+
+secrets:
+  token:
+    file: ./.gh_pat
