@@ -1,9 +1,9 @@
 project(gemm)
 
+# Google Test
+
 find_package(GTest REQUIRED)
 include(GoogleTest)
-
-find_package(benchmark REQUIRED)
 
 add_executable(tMatrix tMatrix.cpp)
 
@@ -14,3 +14,13 @@ enable_testing()
 add_test(NAME tMatrix
          WORKING_DIRECTORY tests
          COMMAND tMatrix)
+
+# Google Benchmark
+
+find_package(benchmark REQUIRED)
+
+add_executable(bMatrix bMatrix.cpp)
+
+target_link_libraries(bMatrix benchmark::benchmark benchmark::benchmark_main)
+
+
