@@ -8,7 +8,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 ############# GEMM LIBRARY ############
 
-add_library(gemm SHARED ${CMAKE_SOURCE_DIR}/src/Matrix.cpp)
+add_library(gemm SHARED
+    ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
+    ${CMAKE_SOURCE_DIR}/src/MatrixMult.cpp)
 
 target_include_directories(gemm PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
