@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: self-hosted
     steps:
-      - name: Say Hello
-        run: echo "Hello, World!"
+      - name: nvidia-smi
+        run: nvidia-smi
 
 

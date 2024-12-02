@@ -4,6 +4,13 @@ services:
     build:
       dockerfile: Dockerfile
       context: .runner
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
     environment:
       - REPO=ccmagruder/gemm
     secrets:

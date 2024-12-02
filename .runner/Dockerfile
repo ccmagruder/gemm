@@ -1,4 +1,5 @@
-FROM ubuntu:24.04
+FROM nvidia/cuda:12.6.2-cudnn-devel-ubuntu24.04
+# FROM ubuntu:24.04
 
 ARG RUNNER_VERSION="2.321.0"
 
@@ -29,4 +30,4 @@ RUN chmod +x start.sh
 
 USER docker
 
-ENTRYPOINT ["./start.sh"]
+CMD ["./start.sh"]
