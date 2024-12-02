@@ -32,4 +32,4 @@ RUN apt update -y && apt upgrade -y \
 
 USER docker
 
-CMD ["./start.sh"]
+CMD ["/start.sh"]

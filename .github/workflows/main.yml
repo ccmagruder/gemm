@@ -16,4 +16,15 @@ jobs:
       - name: nvidia-smi
         run: nvidia-smi
 
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: cmake configure
+        run: cmake -S gemm -B build .
+
+      - name: cmake build
+        run: cmake --build build
+
+      - name: ctest
+        run: ctest --test-dir build --output-on-failure
 
