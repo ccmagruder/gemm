@@ -15,7 +15,6 @@ BENCHMARK(bMatrixMult)
     ->RangeMultiplier(2)->Range(64, 256)
     ->Unit(benchmark::kMillisecond);
 
-
 void bMatrixMultSetup(benchmark::State& state) {
     size_t n = state.range(0);
     MatrixMult mult(Matrix::iid(n, n), Matrix::iid(n, n));
