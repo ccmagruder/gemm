@@ -2,7 +2,7 @@
 
 This repo exists to create a reproducible benchmarking suite for harware-accelerated matrix multiplies.
 
-## Hardware Specifications
+## Host Hardware Specifications
 
 * Alienware Aurora R16
 * Ubuntu 24.04 LTS (Noble)
@@ -21,6 +21,12 @@ This repo exists to create a reproducible benchmarking suite for harware-acceler
 
 ```
 git clone https://github.com/ccmagruder/gemm.git
+cd gemm
+git checkout -b feature/{feature description}
+git push --set-upstream origin feature/{feature description}
+git add {files}
+git commit -S -m "{commit message}"
+git push
 ```
 
 ### Branching
@@ -32,3 +38,13 @@ Hotfix PRs should only be used to fix `main` when unstable; all other changes ar
 ### Merging
 
 The `main` branch is protected and linear history is enforced by squash-rebasing branches on the trunk.
+
+## GitHub Actions Runner
+
+The GitHub Actions Runner is hosted within a docker instance running on the Host
+
+```
+echo $TOKEN > .gh_pat
+docker compose build runner
+docker compose up runner
+```
