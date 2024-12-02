@@ -11,13 +11,35 @@ This repo exists to create a reproducible benchmarking suite for harware-acceler
 * 64 GB: 2 x 32 GB, DDR5, 5200 MT/s
 * 1 TB (2 x 512 GB), M.2, PCIe, SSD
 
-
 ## Dependencies
 
 1. CUDA 12.6.2
 1. Intel MKL
 
 ## Contributing
+
+### Build and Test
+```
+cd /root
+git clone https://github.com/ccmagruder/gemm.git
+cd /root/gemm
+docker compose run --rm --build devcontainer
+cmake -S gemm -B build
+cmake --build build
+ctest --test-dir build
+```
+
+### IDE
+```
+docker compose run --rm --build ide
+cd gemm && nvim
+```
+
+### Branching
+
+Feature branches should be prefixed with `feature/`, e.g. `feature/add_f16_benchmark`.
+Hotfix branches should be prefixed with `hotfix/`, e.g. `hotfix/patch_ci_build_failure`.
+Hotfix PRs should only be used to fix `main` when unstable; all other changes are features.
 
 ```
 git clone https://github.com/ccmagruder/gemm.git
@@ -28,12 +50,6 @@ git add {files}
 git commit -S -m "{commit message}"
 git push
 ```
-
-### Branching
-
-Feature branches should be prefixed with `feature/`, e.g. `feature/add_f16_benchmark`.
-Hotfix branches should be prefixed with `hotfix/`, e.g. `hotfix/patch_ci_build_failure`.
-Hotfix PRs should only be used to fix `main` when unstable; all other changes are features.
 
 ### Merging
 
