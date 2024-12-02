@@ -45,6 +45,7 @@ The GitHub Actions Runner is hosted within a docker instance running on the Host
 
 ```
 echo $TOKEN > .gh_pat
+docker compose build devcontainer
 docker compose build runner
 docker compose up runner
 ```

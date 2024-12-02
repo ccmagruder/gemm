@@ -1,6 +1,23 @@
 services:
+  devcontainer:
+    image: ccmagruder/devcontainer-gemm:latest
+    build:
+      dockerfile: Dockerfile
+      context: .devcontainer
+    volumes:
+      - type: bind
+        source: ./gemm
+        target: /root/gemm
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
   runner:
-    image: ccmagruder/runner:latest
+    image: ccmagruder/runner-gemm:latest
     build:
       dockerfile: Dockerfile
       context: .runner
