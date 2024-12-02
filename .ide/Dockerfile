@@ -5,6 +5,7 @@ FROM ccmagruder/devcontainer-gemm:latest
 RUN apt update -y && apt upgrade -y \
   && apt install -y --no-install-recommends \
     bat \
+    ccls \
     curl \
     fd-find \
     gem \
@@ -50,4 +51,9 @@ RUN apt update -y && apt upgrade -y \
   && cpan install App::cpanminus \
   && cpanm -n Neovim::Ext \
   # Configure ruby provider
-  && gem install neovim
+  && gem install neovim \
+  # Configure gpg credentials
+  && echo "export GPG_TTY=\$(tty)" >> ~/.zshrc
+RUN echo "if [ ! -d /root/.gnupg ]; then" >> ~/.zshrc \
+  && echo "    gpg --batch --import /root/.private.key" >> ~/.zshrc \
+  && echo "fi" >> ~/.zshrc

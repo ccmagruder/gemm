@@ -34,6 +34,18 @@ services:
       - type: bind
         source: ~/.tmux.conf
         target: /root/.tmux.conf
+        read_only: true
+      - type: bind
+        source: ~/.gitconfig
+        target: /root/.gitconfig
+        read_only: true
+      - type: bind
+        source: ~/.git-credentials
+        target: /root/.git-credentials
+        read_only: true
+      - type: bind
+        source: ./.private.key
+        target: /root/.private.key
     deploy:
       resources:
         reservations:
