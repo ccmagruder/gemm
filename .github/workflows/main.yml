@@ -25,6 +25,8 @@ jobs:
       - name: cmake build
         run: cmake --build build
 
-      - name: ctest
+      - name: google test
         run: ctest --test-dir build --output-on-failure
 
+      - name: google benchmark
+        run: build/tests/bMatrix
