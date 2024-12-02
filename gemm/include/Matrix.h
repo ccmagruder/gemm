@@ -12,7 +12,7 @@ class Matrix {
     }
 
     Matrix(size_t m, size_t n)
-        : _m(m), _n(n), _host_ptr(new float[m*n]), _dev_ptr(nullptr) {}
+            : _m(m), _n(n), _host_ptr(new float[m*n]), _dev_ptr(nullptr) {}
 
     Matrix(size_t m, size_t n, float value) : Matrix(m, n) {
         for (size_t i=0; i<m*n; i++) {
@@ -27,6 +27,9 @@ class Matrix {
 
     const float* const get() const { return this->_host_ptr.get(); }
     float* get() { return this->_host_ptr.get(); }
+
+    const float* const getDevPtr() const { return this->_dev_ptr.get(); }
+    float* getDevPtr() { return this->_dev_ptr.get(); }
 
     static std::unique_ptr<const Matrix> normalIID(size_t m, size_t n);
 
