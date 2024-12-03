@@ -1,9 +1,71 @@
 services:
+  devcontainer:
+    image: ccmagruder/devcontainer-gemm:latest
+    build:
+      dockerfile: Dockerfile
+      context: .devcontainer
+    volumes:
+      - type: bind
+        source: .
+        target: /root/gemm
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  ide:
+    image: ccmagruder/ide-gemm:latest
+    build:
+      dockerfile: Dockerfile
+      context: .ide
+    command: zsh
+    environment:
+      - TERM=xterm-256color
+    volumes:
+      - type: bind
+        source: .
+        target: /root/gemm
+      - type: bind
+        source: ~/.config/nvim
+        target: /root/.config/nvim
+      - type: bind
+        source: ~/.tmux.conf
+        target: /root/.tmux.conf
+        read_only: true
+      - type: bind
+        source: ~/.gitconfig
+        target: /root/.gitconfig
+        read_only: true
+      - type: bind
+        source: ~/.git-credentials
+        target: /root/.git-credentials
+        read_only: true
+      - type: bind
+        source: ./.private.key
+        target: /root/.private.key
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
   runner:
-    image: ccmagruder/runner:latest
+    image: ccmagruder/runner-gemm:latest
     build:
       dockerfile: Dockerfile
       context: .runner
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu]
     environment:
       - REPO=ccmagruder/gemm
     secrets:
