@@ -29,4 +29,6 @@ jobs:
         run: ctest --test-dir build --output-on-failure
 
       - name: google benchmark
-        run: build/tests/bMatrix
+        run: |
+          build/tests/bMatrix
+          build/tests/bMatrixMult

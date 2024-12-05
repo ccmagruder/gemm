@@ -3,7 +3,7 @@
 
 #include "Matrix.h"
 
-std::unique_ptr<Matrix> Matrix::iid(size_t m, size_t n) {
+std::unique_ptr<const Matrix> Matrix::iid(size_t m, size_t n) {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::normal_distribution<float> dist;

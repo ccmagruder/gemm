@@ -42,6 +42,34 @@ Hotfix branches should be prefixed with `hotfix/`, e.g. `hotfix/patch_ci_build_f
 Hotfix PRs should only be used to fix `main` when unstable; all other changes are features.
 
 ```
+cd /root
+git clone https://github.com/ccmagruder/gemm.git
+<<<<<<< HEAD
+cd /root/gemm
+docker compose run --rm --build devcontainer
+cmake -S gemm -B build
+cmake --build build
+ctest --test-dir build
+```
+
+### IDE
+```
+docker compose run --rm --build ide
+cd gemm
+git checkout -b feature/{feature description}
+git push --set-upstream origin feature/{feature description}
+git add {files}
+git commit -S -m "{commit message}"
+git push
+```
+
+### Branching
+
+Feature branches should be prefixed with `feature/`, e.g. `feature/add_f16_benchmark`.
+Hotfix branches should be prefixed with `hotfix/`, e.g. `hotfix/patch_ci_build_failure`.
+Hotfix PRs should only be used to fix `main` when unstable; all other changes are features.
+
+```
 git clone https://github.com/ccmagruder/gemm.git
 cd gemm
 git checkout -b feature/{feature description}
