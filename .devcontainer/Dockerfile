@@ -8,4 +8,5 @@ RUN apt update -y && apt upgrade -y \
     gcc \
     git \
     libbenchmark-dev \
-    libgtest-dev
+    libgtest-dev \
+  && rm -rf /var/lib/apt/lists/*

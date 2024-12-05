@@ -25,6 +25,7 @@ RUN apt update -y && apt upgrade -y \
     tmux \
     tree-sitter-cli \
     zsh \
+  && rm -rf /var/lib/apt/lists/* \
   # Configure shell
   && chsh -s /usr/bin/zsh \
   && ln -s /usr/bin/batcat /usr/local/bin/bat \
