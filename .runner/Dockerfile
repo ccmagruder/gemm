@@ -29,7 +29,7 @@ RUN apt update -y && apt upgrade -y \
   && cd / \
   && chown -R docker ~docker \
   && /home/docker/actions-runner/bin/installdependencies.sh \
-  && chmod +x start.sh
+  && chmod +x /start.sh
 
 USER docker
 
