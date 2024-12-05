@@ -21,6 +21,7 @@ RUN apt update -y && apt upgrade -y \
     python3-venv \
     python3-dev \
     python3-pip \
+  && rm -rf /var/lib/apt/lists/* \
   && mkdir -p /home/docker/actions-runner \
   && cd /home/docker/actions-runner \
   && curl -O -L https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz \
