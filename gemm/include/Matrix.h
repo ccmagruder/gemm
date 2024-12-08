@@ -12,11 +12,18 @@ class Matrix {
         }
     }
 
+    const float* const operator[](size_t i) const {
+        return this->_data.get() + this->_n*i;
+    }
     float* operator[](size_t i) { return this->_data.get() + this->_n*i; }
 
-    float* get() const { return this->_data.get(); }
+    const float* const get() const { return this->_data.get(); }
+    float* get() { return this->_data.get(); }
 
-    static std::unique_ptr<Matrix> iid(size_t m, size_t n);
+    static std::unique_ptr<const Matrix> iid(size_t m, size_t n);
+
+    size_t m() const { return this->_m; }
+    size_t n() const { return this->_n; }
 
  protected:
     size_t _m;
