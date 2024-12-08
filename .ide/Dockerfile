@@ -54,7 +54,9 @@ RUN apt update -y && apt upgrade -y \
   # Configure ruby provider
   && gem install neovim \
   # Configure gpg credentials
-  && echo "export GPG_TTY=\$(tty)" >> ~/.zshrc
-RUN echo "if [ ! -d /root/.gnupg ]; then" >> ~/.zshrc \
+  && echo "export GPG_TTY=\$(tty)" >> ~/.zshrc \
+  && echo "if [ ! -d /root/.gnupg ]; then" >> ~/.zshrc \
   && echo "    gpg --batch --import /root/.private.key" >> ~/.zshrc \
-  && echo "fi" >> ~/.zshrc
+  && echo "fi" >> ~/.zshrc \
+  && echo "alias ll=\"ls -alh\"" >> ~/.zshrc \
+  && echo "alias gs=\"git status\"" >> ~/.zshrc
