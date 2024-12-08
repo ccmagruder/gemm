@@ -20,7 +20,7 @@ class Matrix {
     const float* const get() const { return this->_data.get(); }
     float* get() { return this->_data.get(); }
 
-    static std::unique_ptr<const Matrix> iid(size_t m, size_t n);
+    static std::unique_ptr<const Matrix> normal_iid(size_t m, size_t n);
 
     size_t m() const { return this->_m; }
     size_t n() const { return this->_n; }
