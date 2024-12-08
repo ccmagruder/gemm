@@ -20,8 +20,7 @@ This repo exists to create a reproducible benchmarking suite for harware-acceler
 
 ### Build and Test
 ```
-cd /root
-git clone https://github.com/ccmagruder/gemm.git
+git clone https://github.com/ccmagruder/gemm.git /root
 cd /root/gemm
 docker compose run --rm --build devcontainer
 cmake -S gemm -B build
@@ -31,11 +30,16 @@ ctest --test-dir build
 
 ### IDE
 ```
-docker compose run --rm --build ide
-cd gemm && nvim
+docker compose build devcontainer
+docker commpose build ide
+docker compose up -d ide
+docker exec ide zsh
+...
+exit
+docker compose down ide
 ```
 
-### Branching
+### Commit
 
 Feature branches should be prefixed with `feature/`, e.g. `feature/add_f16_benchmark`.
 Hotfix branches should be prefixed with `hotfix/`, e.g. `hotfix/patch_ci_build_failure`.
