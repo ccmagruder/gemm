@@ -1,17 +1,25 @@
 #include "MatrixMult.h"
 
-std::unique_ptr<const Matrix> MatrixMult::compute() const {
-    std::unique_ptr<Matrix> C
-        = std::make_unique<Matrix>(this->_A->m(), this->_B->n(), 0.0);
-    const Matrix& A = *this->_A;
-    float* ptr = C->get();
-    for (size_t i=0; i<C->m(); i++) {
-        for (size_t j=0; j<C->n(); j++) {
+std::shared_ptr<Matrix> MatrixMult::compute() {
+    this->_setup();
+    this->_run();
+    this->_teardown();
+    return this->get();
+}
+
+void MatrixMult::_setup() {
+    this->_C = std::make_shared<Matrix>(this->_A->m(), this->_B->n());
+}
+
+void MatrixMult::_run() {
+    for (size_t i=0; i<this->_C->m(); i++) {
+        for (size_t j=0; j<this->_C->n(); j++) {
+            (*this->_C)[i][j] = 0;
             for (size_t k=0; k<this->_A->n(); k++) {
-                (*C)[i][j] += (*this->_A)[i][k] * (*this->_B)[k][j];
+                (*this->_C)[i][j] += (*this->_A)[i][k] * (*this->_B)[k][j];
             }
         }
     }
-
-    return C;
 }
+
+void MatrixMult::_teardown() {}

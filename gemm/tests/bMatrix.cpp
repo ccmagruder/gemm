@@ -10,7 +10,7 @@ void bInitializeSquare(benchmark::State& state) {
 }
 
 BENCHMARK(bInitializeSquare)
-    ->RangeMultiplier(2)->Range(512, 2048)
+    ->RangeMultiplier(2)->Range(64, 256)
     ->Unit(benchmark::kMillisecond);
 
 
@@ -23,5 +23,5 @@ void bInitializeIID(benchmark::State& state) {
 }
 
 BENCHMARK(bInitializeIID)
-    ->RangeMultiplier(2)->Range(512, 2048)
+    ->RangeMultiplier(2)->Range(64, 256)
     ->Unit(benchmark::kMillisecond);
