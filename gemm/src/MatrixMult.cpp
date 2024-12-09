@@ -8,7 +8,7 @@ std::shared_ptr<Matrix> MatrixMult::compute() {
 }
 
 void MatrixMult::_setup() {
-    this->_C = std::make_shared<Matrix>(this->_A->m(), this->_B->n());
+    this->_C = std::make_shared<Matrix>(this->_A->m(), this->_B->n(), 0.0);
 }
 
 void MatrixMult::_run() {

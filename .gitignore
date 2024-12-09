@@ -1,4 +1,5 @@
 .gh_pat
 .private.key
 .ccls-cache/
+compile_commands.json
 build/
