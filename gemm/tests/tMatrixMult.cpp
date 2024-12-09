@@ -9,5 +9,5 @@ TEST(tMatrixMult, Ones) {
     MatrixMult mult(std::move(A), std::move(B));
     mult.compute();
     std::shared_ptr<Matrix> C = mult.get();
-    ASSERT_EQ((*C)[0][0], 32.0);
+    ASSERT_FLOAT_EQ((*C)[0][0], 32.0);
 }
