@@ -21,7 +21,7 @@ class Matrix {
     const float* const get() const { return this->_host_ptr.get(); }
     float* get() { return this->_host_ptr.get(); }
 
-    static std::unique_ptr<const Matrix> iid(size_t m, size_t n);
+    static std::unique_ptr<const Matrix> normalIID(size_t m, size_t n);
 
     size_t m() const { return this->_m; }
     size_t n() const { return this->_n; }

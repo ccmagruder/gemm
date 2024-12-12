@@ -18,7 +18,7 @@ void bInitializeIID(benchmark::State& state) {
 
     for (auto _ : state) {
         size_t n = state.range(0);
-        std::unique_ptr<const Matrix> A = Matrix::iid(n, n);
+        std::unique_ptr<const Matrix> A = Matrix::normalIID(n, n);
     }
 }
 
