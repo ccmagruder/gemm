@@ -5,7 +5,7 @@
 
 void bMatrixMult(benchmark::State& state) {
     size_t n = state.range(0);
-    MatrixMult mult(Matrix::iid(n, n), Matrix::iid(n, n));
+    MatrixMult mult(Matrix::normalIID(n, n), Matrix::normalIID(n, n));
     for (auto _ : state) {
         mult.compute();
     }
@@ -18,7 +18,7 @@ BENCHMARK(bMatrixMult)
 
 void bMatrixMultSetup(benchmark::State& state) {
     size_t n = state.range(0);
-    MatrixMult mult(Matrix::iid(n, n), Matrix::iid(n, n));
+    MatrixMult mult(Matrix::normalIID(n, n), Matrix::normalIID(n, n));
     for (auto _ : state) {
         mult._setup();
     }
@@ -31,7 +31,7 @@ BENCHMARK(bMatrixMultSetup)
 
 void bMatrixMultRun(benchmark::State& state) {
     size_t n = state.range(0);
-    MatrixMult mult(Matrix::iid(n, n), Matrix::iid(n, n));
+    MatrixMult mult(Matrix::normalIID(n, n), Matrix::normalIID(n, n));
     mult._setup();
     for (auto _ : state) {
         mult._run();
@@ -45,7 +45,7 @@ BENCHMARK(bMatrixMultRun)
 
 void bMatrixMultTeardown(benchmark::State& state) {
     size_t n = state.range(0);
-    MatrixMult mult(Matrix::iid(n, n), Matrix::iid(n, n));
+    MatrixMult mult(Matrix::normalIID(n, n), Matrix::normalIID(n, n));
     mult._setup();
     mult._run();
     for (auto _ : state) {
