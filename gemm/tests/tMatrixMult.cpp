@@ -4,10 +4,7 @@
 #include "MatrixMult.h"
 
 template <typename T>
-class tMatrixMult : public testing::Test {
- public:
-    
-};
+class tMatrixMult : public testing::Test {};
 
 using Types = ::testing::Types<MatrixMult, MatrixMultCuBLAS>;
 TYPED_TEST_SUITE(tMatrixMult, Types);

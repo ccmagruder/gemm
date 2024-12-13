@@ -27,46 +27,12 @@ class MatrixMult {
 
 class MatrixMultCuBLAS : public MatrixMult {
  public:
-    MatrixMultCuBLAS(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
-            : MatrixMult(std::move(A), std::move(B)) {
-        cublasStatus_t stat = cublasCreate(&handle);
-        assert(stat==CUBLAS_STATUS_SUCCESS);
-    }
+    MatrixMultCuBLAS(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B);
+    ~MatrixMultCuBLAS();
 
-    ~MatrixMultCuBLAS() {
-        cublasDestroy(handle);
-    }
-
-    void _setup() override {
-        this->_A->toDevice();
-        this->_B->toDevice();
-        this->_C = Matrix::makeDevice(this->_A->m(), this->_B->n());
-    }
-
-    void _run() override {
-        float alpha=1;
-        float beta=0;
-        cublasStatus_t stat = cublasSgemm(handle,         // handle
-            CUBLAS_OP_N,           // transa
-            CUBLAS_OP_N,           // transb
-            this->_C->m(),         // m
-            this->_C->n(),         // n
-            this->_A->n(),         // k
-            &alpha,                // alpha
-            this->_A->getDevPtr(), // A
-            this->_A->m(),         // lda
-            this->_B->getDevPtr(), // B
-            this->_B->m(),         // ldb
-            &beta,                 // beta
-            this->_C->getDevPtr(), // C
-            this->_C->m());        // ldc
-
-        assert(stat==CUBLAS_STATUS_SUCCESS);
-    }
-
-    void _teardown() override {
-        this->_C->toHost();
-    }
+    void _setup() override;
+    void _run() override;
+    void _teardown() override;
 
  protected:
     cublasHandle_t handle;
