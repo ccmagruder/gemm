@@ -27,8 +27,7 @@ class MatrixMult {
 
 class MatrixMultCuBLAS : public MatrixMult {
  public:
-    MatrixMultCuBLAS(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
-      : MatrixMult(std::move(A), std::move(B)) {}
+    using MatrixMult::MatrixMult;
 
     void _setup() override {
         this->_A->toDevice();
