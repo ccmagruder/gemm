@@ -27,7 +27,15 @@ class MatrixMult {
 
 class MatrixMultCuBLAS : public MatrixMult {
  public:
-    using MatrixMult::MatrixMult;
+    MatrixMultCuBLAS(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
+            : MatrixMult(std::move(A), std::move(B)) {
+        cublasStatus_t stat = cublasCreate(&handle);
+        assert(stat==CUBLAS_STATUS_SUCCESS);
+    }
+
+    ~MatrixMultCuBLAS() {
+        cublasDestroy(handle);
+    }
 
     void _setup() override {
         this->_A->toDevice();
@@ -36,14 +44,9 @@ class MatrixMultCuBLAS : public MatrixMult {
     }
 
     void _run() override {
-        cublasHandle_t handle;
-        cublasStatus_t stat; 
-        stat = cublasCreate(&handle);
-        assert(stat==CUBLAS_STATUS_SUCCESS);
-
         float alpha=1;
         float beta=0;
-        stat = cublasSgemm(handle,         // handle
+        cublasStatus_t stat = cublasSgemm(handle,         // handle
             CUBLAS_OP_N,           // transa
             CUBLAS_OP_N,           // transb
             this->_C->m(),         // m
@@ -59,10 +62,12 @@ class MatrixMultCuBLAS : public MatrixMult {
             this->_C->m());        // ldc
 
         assert(stat==CUBLAS_STATUS_SUCCESS);
-        cublasDestroy(handle);
     }
 
     void _teardown() override {
         this->_C->toHost();
     }
+
+ protected:
+    cublasHandle_t handle;
 };
