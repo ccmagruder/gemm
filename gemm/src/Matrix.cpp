@@ -6,11 +6,13 @@
 #include "Matrix.h"
 
 void Matrix::DevDeleter::operator()(float* devPtr) {
-    if (devPtr)
+    if (devPtr) {
         cudaFree(devPtr);
+        devPtr = nullptr;
+    }
 };
 
-void Matrix::toDevice() {
+void Matrix::_devAlloc() const {
     cudaError_t cudaStat;
     if (!this->_dev_ptr) {
         float* ptr;
@@ -18,6 +20,11 @@ void Matrix::toDevice() {
         this->_dev_ptr = std::unique_ptr<float, DevDeleter>(ptr);
     }
     assert(cudaStat == cudaSuccess);
+}
+
+void Matrix::toDevice() const {
+    this->_devAlloc();
+    cudaError_t cudaStat;
     cudaStat = cudaMemcpy(this->_dev_ptr.get(),
         this->_host_ptr.get(),
         this->_m * this->_n * sizeof(float),
