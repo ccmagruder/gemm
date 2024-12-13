@@ -5,7 +5,14 @@
 
 class Matrix {
  public:
-    Matrix(size_t m, size_t n) : _m(m), _n(n), _host_ptr(new float[m*n]), _dev_ptr(nullptr) {}
+    static std::unique_ptr<Matrix> makeDevice(size_t m, size_t n) {
+        std::unique_ptr<Matrix> A = std::make_unique<Matrix>(m, n);
+        A->_devAlloc();
+        return A;
+    }
+
+    Matrix(size_t m, size_t n)
+        : _m(m), _n(n), _host_ptr(new float[m*n]), _dev_ptr(nullptr) {}
 
     Matrix(size_t m, size_t n, float value) : Matrix(m, n) {
         for (size_t i=0; i<m*n; i++) {
@@ -26,7 +33,7 @@ class Matrix {
     size_t m() const { return this->_m; }
     size_t n() const { return this->_n; }
 
-    void toDevice();
+    void toDevice() const;
     void toHost();
 
  protected:
@@ -34,9 +41,11 @@ class Matrix {
         void operator()(float* devPtr);
     };
 
+    void _devAlloc() const;
+
     size_t _m;
     size_t _n;
     std::unique_ptr<float[], std::default_delete<float[]>> _host_ptr;
-    std::unique_ptr<float, DevDeleter> _dev_ptr;
+    mutable std::unique_ptr<float, DevDeleter> _dev_ptr;
 };
 
