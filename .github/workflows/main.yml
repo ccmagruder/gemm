@@ -12,6 +12,9 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    container:
+      image: ccmagruder/devcontainer-gemm
+      options: --gpus all
     steps:
       - name: nvidia-smi
         run: nvidia-smi

@@ -69,9 +69,15 @@ services:
             capabilities: [gpu]
     environment:
       - REPO=ccmagruder/gemm
+    runtime: sysbox-runc
     secrets:
       - token
+    volumes:
+      - docker-cache:/var/lib/docker
 
 secrets:
   token:
     file: ./.gh_pat
+
+volumes:
+  docker-cache:
