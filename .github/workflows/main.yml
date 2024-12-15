@@ -10,7 +10,16 @@ on:
       - synchronize
 
 jobs:
+  devcontainer:
+    runs-on: self-hosted
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: docker build
+        run: docker compose build devcontainer
   build:
+    needs: devcontainer
     runs-on: self-hosted
     container:
       image: ccmagruder/devcontainer-gemm
