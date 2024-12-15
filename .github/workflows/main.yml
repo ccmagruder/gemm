@@ -18,6 +18,10 @@ jobs:
 
       - name: docker build
         run: docker compose build devcontainer
+
+      - name: nvidia-smi
+        run: docker compose run --rm devcontainer nvidia-smi
+
   build:
     needs: devcontainer
     runs-on: self-hosted
