@@ -51,7 +51,7 @@ void Matrix::_devAlloc() const {
     cudaError_t cudaStat;
     if (!this->_dev_ptr) {
         float* ptr;
-        cudaStat = cudaMalloc ((void**)&ptr, this->_m * this->_n * sizeof(float));
+        cudaStat = cudaMalloc ((void**)&ptr, this->m * this->n * sizeof(float));
         assert(cudaStat == cudaSuccess);
         this->_dev_ptr = std::unique_ptr<float, DevDeleter>(ptr);
     }
@@ -62,7 +62,7 @@ void Matrix::toDevice() const {
     cudaError_t cudaStat;
     cudaStat = cudaMemcpy(this->_dev_ptr.get(),
         this->_host_ptr.get(),
-        this->_m * this->_n * sizeof(float),
+        this->m * this->n * sizeof(float),
         cudaMemcpyHostToDevice);
     assert(cudaStat == cudaSuccess);
 }
