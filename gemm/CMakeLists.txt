@@ -14,8 +14,8 @@ find_package(CUDAToolkit REQUIRED)
 
 add_library(gemm SHARED
     ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
-    ${CMAKE_SOURCE_DIR}/src/MatrixMult.cpp
-    ${CMAKE_SOURCE_DIR}/src/MatrixMultCuBLAS.cpp)
+    ${CMAKE_SOURCE_DIR}/src/Gemm.cpp
+    ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp)
 
 target_include_directories(gemm PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
