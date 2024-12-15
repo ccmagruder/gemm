@@ -1,3 +1,5 @@
+#include "cublas_v2.h"
+
 #include "MatrixMult.h"
 
 MatrixMultCuBLAS::MatrixMultCuBLAS(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)

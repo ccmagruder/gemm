@@ -5,7 +5,7 @@
 void bInitializeSquare(benchmark::State& state) {
     for (auto _ : state) {
         size_t n = state.range(0);
-        Matrix A(n, n, 0);
+        Matrix::fill(n, n, 0);
     }
 }
 

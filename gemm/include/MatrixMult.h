@@ -2,9 +2,9 @@
 
 #include <cassert>
 
-#include "Matrix.h"
-
 #include "cublas_v2.h"
+
+#include "Matrix.h"
 
 class MatrixMult {
  public:

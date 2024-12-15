@@ -6,6 +6,40 @@
 
 #include "Matrix.h"
 
+std::unique_ptr<Matrix> Matrix::makeDevice(size_t m, size_t n) {
+    std::unique_ptr<Matrix> A(new Matrix(m, n));
+    A->_devAlloc();
+    return A;
+}
+
+std::unique_ptr<Matrix> Matrix::makeHost(size_t m, size_t n) {
+    return std::unique_ptr<Matrix>(new Matrix(m, n));
+}
+
+std::unique_ptr<const Matrix> Matrix::normalIID(size_t m, size_t n) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::normal_distribution<float> dist;
+
+    std::unique_ptr<Matrix> A(new Matrix(m, n));
+    float* ptr = A->get();
+    for (size_t i=0; i<m*n; i++) {
+        ptr[i] = dist(gen);
+    }
+    return A;
+}
+
+std::unique_ptr<const Matrix> Matrix::fill(size_t m, size_t n, float value) {
+    std::unique_ptr<Matrix> A(new Matrix(m, n));
+    float* ptr = A->get();
+    for (size_t i=0; i<m*n; i++) {
+        ptr[i] = value;
+    }
+    
+    return A;
+}
+
+
 void Matrix::DevDeleter::operator()(float* devPtr) {
     if (devPtr) {
         cudaFree(devPtr);
@@ -40,15 +74,3 @@ void Matrix::toHost() {
     assert(cudaStat == cudaSuccess);
 }
 
-std::unique_ptr<const Matrix> Matrix::normalIID(size_t m, size_t n) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::normal_distribution<float> dist;
-
-    std::unique_ptr<Matrix> A = std::make_unique<Matrix>(m, n);
-    float* ptr = A->get();
-    for (size_t i=0; i<m*n; i++) {
-        ptr[i] = dist(gen);
-    }
-    return A;
-}
