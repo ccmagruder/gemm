@@ -47,4 +47,4 @@ jobs:
       - name: google benchmark
         run: |
           build/tests/bMatrix
-          build/tests/bMatrixMult
+          build/tests/bGemm
