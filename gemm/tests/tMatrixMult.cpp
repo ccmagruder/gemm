@@ -6,7 +6,7 @@
 template <typename T>
 class tMatrixMult : public testing::Test {};
 
-using Types = ::testing::Types<MatrixMult, MatrixMultCuBLAS>;
+using Types = ::testing::Types<Gemm, GemmCuBlas>;
 TYPED_TEST_SUITE(tMatrixMult, Types);
 
 TYPED_TEST(tMatrixMult, Ones) {

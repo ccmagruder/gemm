@@ -6,9 +6,9 @@
 
 #include "Matrix.h"
 
-class MatrixMult {
+class Gemm {
  public:
-    MatrixMult(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
+    Gemm(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
       : _A(std::move(A)), _B(std::move(B)) {}
 
     std::shared_ptr<Matrix> compute();
@@ -25,10 +25,10 @@ class MatrixMult {
     std::shared_ptr<Matrix> _C;
 };
 
-class MatrixMultCuBLAS : public MatrixMult {
+class GemmCuBlas : public Gemm {
  public:
-    MatrixMultCuBLAS(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B);
-    ~MatrixMultCuBLAS();
+    GemmCuBlas(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B);
+    ~GemmCuBlas();
 
     void _setup() override;
     void _run() override;
