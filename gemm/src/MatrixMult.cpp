@@ -1,4 +1,4 @@
-#include "MatrixMult.h"
+#include "Gemm.h"
 
 std::shared_ptr<Matrix> MatrixMult::compute() {
     this->_setup();

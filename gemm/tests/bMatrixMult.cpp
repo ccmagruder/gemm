@@ -1,7 +1,7 @@
 #include <benchmark/benchmark.h>
 
 #include "Matrix.h"
-#include "MatrixMult.h"
+#include "Gemm.h"
 
 template<typename T>
 class GemmFixture : public benchmark::Fixture {
