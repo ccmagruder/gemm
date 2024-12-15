@@ -22,7 +22,7 @@ std::unique_ptr<const Matrix> Matrix::normalIID(size_t m, size_t n) {
     std::normal_distribution<float> dist;
 
     std::unique_ptr<Matrix> A(new Matrix(m, n));
-    float* ptr = A->get();
+    float* ptr = A->getHostPtr();
     for (size_t i=0; i<m*n; i++) {
         ptr[i] = dist(gen);
     }
@@ -31,7 +31,7 @@ std::unique_ptr<const Matrix> Matrix::normalIID(size_t m, size_t n) {
 
 std::unique_ptr<const Matrix> Matrix::fill(size_t m, size_t n, float value) {
     std::unique_ptr<Matrix> A(new Matrix(m, n));
-    float* ptr = A->get();
+    float* ptr = A->getHostPtr();
     for (size_t i=0; i<m*n; i++) {
         ptr[i] = value;
     }

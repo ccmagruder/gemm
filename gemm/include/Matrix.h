@@ -19,8 +19,8 @@ class Matrix {
     }
     float* operator[](size_t i) { return this->_host_ptr.get() + this->_n*i; }
 
-    const float* const get() const { return this->_host_ptr.get(); }
-    float* get() { return this->_host_ptr.get(); }
+    const float* const getHostPtr() const { return this->_host_ptr.get(); }
+    float* getHostPtr() { return this->_host_ptr.get(); }
 
     const float* const getDevPtr() const { return this->_dev_ptr.get(); }
     float* getDevPtr() { return this->_dev_ptr.get(); }
