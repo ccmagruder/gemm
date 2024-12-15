@@ -1,7 +1,7 @@
 #include <benchmark/benchmark.h>
 
 #include "Matrix.h"
-#include "MatrixMult.h"
+#include "Gemm.h"
 
 template<typename T>
 class GemmFixture : public benchmark::Fixture {
@@ -24,11 +24,11 @@ class GemmFixture : public benchmark::Fixture {
     }
 };
 
-BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, RoundTripNaive, MatrixMult)(benchmark::State& state) {
+BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, RoundTripNaive, Gemm)(benchmark::State& state) {
     GemmFixture::RoundTrip(state);
 }
 
-BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, RoundTripCuBLAS, MatrixMultCuBLAS)(benchmark::State& state) {
+BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, RoundTripCuBLAS, GemmCuBlas)(benchmark::State& state) {
     GemmFixture::RoundTrip(state);
 }
 
@@ -40,11 +40,11 @@ BENCHMARK_REGISTER_F(GemmFixture, RoundTripNaive)
     ->RangeMultiplier(2)->Range(64, 256)
     ->Unit(benchmark::kMillisecond);
 
-BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmCuBLAS, MatrixMultCuBLAS)(benchmark::State& state) {
+BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmCuBLAS, GemmCuBlas)(benchmark::State& state) {
     GemmFixture::Gemm(state);
 }
 
-BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmNaive, MatrixMult)(benchmark::State& state) {
+BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmNaive, Gemm)(benchmark::State& state) {
     GemmFixture::Gemm(state);
 }
 

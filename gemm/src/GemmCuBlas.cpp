@@ -1,24 +1,24 @@
 #include "cublas_v2.h"
 
-#include "MatrixMult.h"
+#include "Gemm.h"
 
-MatrixMultCuBLAS::MatrixMultCuBLAS(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
-        : MatrixMult(std::move(A), std::move(B)) {
+GemmCuBlas::GemmCuBlas(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
+        : Gemm(std::move(A), std::move(B)) {
     cublasStatus_t stat = cublasCreate(&handle);
     assert(stat==CUBLAS_STATUS_SUCCESS);
 }
 
-MatrixMultCuBLAS::~MatrixMultCuBLAS() {
+GemmCuBlas::~GemmCuBlas() {
     cublasDestroy(handle);
 }
 
-void MatrixMultCuBLAS::_setup() {
+void GemmCuBlas::_setup() {
     this->_A->toDevice();
     this->_B->toDevice();
     this->_C = Matrix::makeDevice(this->_A->m, this->_B->n);
 }
 
-void MatrixMultCuBLAS::_run() {
+void GemmCuBlas::_run() {
     float alpha=1;
     float beta=0;
     cublasStatus_t stat = cublasSgemm(
@@ -40,6 +40,6 @@ void MatrixMultCuBLAS::_run() {
     assert(stat==CUBLAS_STATUS_SUCCESS);
 }
 
-void MatrixMultCuBLAS::_teardown() {
+void GemmCuBlas::_teardown() {
     this->_C->toHost();
 }
