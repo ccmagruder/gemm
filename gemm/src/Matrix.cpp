@@ -1,3 +1,4 @@
+#include <cassert>
 #include <memory>
 #include <random>
 
@@ -17,9 +18,9 @@ void Matrix::_devAlloc() const {
     if (!this->_dev_ptr) {
         float* ptr;
         cudaStat = cudaMalloc ((void**)&ptr, this->_m * this->_n * sizeof(float));
+        assert(cudaStat == cudaSuccess);
         this->_dev_ptr = std::unique_ptr<float, DevDeleter>(ptr);
     }
-    assert(cudaStat == cudaSuccess);
 }
 
 void Matrix::toDevice() const {
