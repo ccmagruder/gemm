@@ -14,13 +14,13 @@ class Matrix {
     static std::unique_ptr<const Matrix> normalIID(size_t m, size_t n);
     static std::unique_ptr<const Matrix> fill(size_t m, size_t n, float value);
 
-    // Accessors
-    // TODO: Convert to column-major indexing
-    const float* const operator[](size_t i) const {
-        return this->_host_ptr.get() + this->n*i;
+    // Accessors (Column Major)
+    const float& operator()(size_t i, size_t j) const {
+        return (this->_host_ptr.get() + this->m*j)[i];
     }
-    // TODO: Convert to column-major indexing
-    float* operator[](size_t i) { return this->_host_ptr.get() + this->n*i; }
+    float& operator()(size_t i, size_t j) {
+        return (this->_host_ptr.get() + this->m*j)[i];
+    }
 
     const float* const getHostPtr() const { return this->_host_ptr.get(); }
     float* getHostPtr() { return this->_host_ptr.get(); }
@@ -28,6 +28,7 @@ class Matrix {
     const float* const getDevPtr() const { return this->_dev_ptr.get(); }
     float* getDevPtr() { return this->_dev_ptr.get(); }
 
+    // Movers
     void toDevice() const;
     void toHost();
 
