@@ -2,15 +2,30 @@
 
 #include "Gemm.h"
 
-GemmCuBlas::GemmCuBlas(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
-        : Gemm(std::move(A), std::move(B)) {
-    cublasStatus_t stat = cublasCreate(&handle);
-    assert(stat==CUBLAS_STATUS_SUCCESS);
-}
+///////////////////// CuBLAS Handle Singleton /////////////////
 
-GemmCuBlas::~GemmCuBlas() {
-    cublasDestroy(handle);
-}
+class CuBlasHandle {
+    CuBlasHandle() {
+        cublasStatus_t stat = cublasCreate(&this->_handle);
+        assert(stat==CUBLAS_STATUS_SUCCESS);
+    }
+
+ public:
+    ~CuBlasHandle() { cublasDestroy(this->_handle); }
+
+    static cublasHandle_t get() {
+        return CuBlasHandle::instance->_handle;
+    }
+
+ private:
+    cublasHandle_t _handle;
+    static std::unique_ptr<CuBlasHandle> instance;
+};
+
+std::unique_ptr<CuBlasHandle> CuBlasHandle::instance(new CuBlasHandle);
+
+
+//////////////////////// GemmCuBlas ///////////////////////////
 
 void GemmCuBlas::_setup() {
     this->_A->toDevice();
@@ -22,7 +37,7 @@ void GemmCuBlas::_run() {
     float alpha=1;
     float beta=0;
     cublasStatus_t stat = cublasSgemm(
-        handle,                // handle
+        CuBlasHandle::get(),   // handle
         CUBLAS_OP_N,           // transa
         CUBLAS_OP_N,           // transb
         this->_C->m,           // m

@@ -3,9 +3,13 @@
 #include <memory>
 
 class Matrix {
- public:
     Matrix(size_t m, size_t n)
             : m(m), n(n), _host_ptr(new float[m*n]), _dev_ptr(nullptr) {}
+
+ public:
+    Matrix() = delete;
+    Matrix(const Matrix&) = delete;
+    Matrix& operator=(const Matrix&) = delete;
 
     // Factories
     static std::unique_ptr<Matrix> makeDevice(size_t m, size_t n);

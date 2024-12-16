@@ -6,7 +6,7 @@
 template <typename T>
 class tGemm : public testing::Test {};
 
-using Types = ::testing::Types<Gemm, GemmCuBlas>;
+using Types = ::testing::Types<GemmNaive, GemmCuBlas>;
 TYPED_TEST_SUITE(tGemm, Types);
 
 TYPED_TEST(tGemm, Ones) {

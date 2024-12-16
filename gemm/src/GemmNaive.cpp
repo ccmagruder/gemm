@@ -1,17 +1,11 @@
 #include "Gemm.h"
 
-std::shared_ptr<Matrix> Gemm::compute() {
-    this->_setup();
-    this->_run();
-    this->_teardown();
-    return this->get();
+
+void GemmNaive::_setup() {
+    this->_C = Matrix::makeHost(this->_A->m, this->_B->n);
 }
 
-void Gemm::_setup() {
-    this->_C = std::make_shared<Matrix>(this->_A->m, this->_B->n);
-}
-
-void Gemm::_run() {
+void GemmNaive::_run() {
     for (size_t i=0; i<this->_C->m; i++) {
         for (size_t j=0; j<this->_C->n; j++) {
             (*this->_C)(i,j) = 0;
@@ -22,4 +16,4 @@ void Gemm::_run() {
     }
 }
 
-void Gemm::_teardown() {}
+void GemmNaive::_teardown() {}
