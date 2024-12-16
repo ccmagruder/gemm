@@ -27,13 +27,9 @@ class Gemm {
 
 class GemmCuBlas : public Gemm {
  public:
-    GemmCuBlas(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B);
-    ~GemmCuBlas();
+    using Gemm::Gemm;
 
     void _setup() override;
     void _run() override;
     void _teardown() override;
-
- protected:
-    cublasHandle_t handle;
 };
