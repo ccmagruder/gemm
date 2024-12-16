@@ -8,7 +8,7 @@ std::shared_ptr<Matrix> Gemm::compute() {
 }
 
 void Gemm::_setup() {
-    this->_C = std::make_shared<Matrix>(this->_A->m, this->_B->n);
+    this->_C = Matrix::makeHost(this->_A->m, this->_B->n);
 }
 
 void Gemm::_run() {
