@@ -62,8 +62,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bGemm
-          path: |
-            build/tests/bGemm
+          path: build/tests/bGemm
 
 
   benchmark:
@@ -94,4 +93,10 @@ jobs:
       - name: google benchmark
         run: |
           chmod +x bGemm
-          LD_LIBRARY_PATH=$(pwd)/build:${LD_LIBRARY_PATH} ./bGemm
+          ./bGemm --benchmark_out=bGemm.json --benchmark_out_format=json
+
+      - name: upload benchmark json results
+        uses: actions/upload-artifact@v4
+        with:
+          name: bGemm.json
+          path: bGemm.json
