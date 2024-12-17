@@ -13,6 +13,13 @@ jobs:
   devcontainer:
     runs-on: self-hosted
     steps:
+      - name: cleanup build folder
+        run: |
+          ls -la ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          ls -la ./
+
       - name: checkout repo
         uses: actions/checkout@v4
 
@@ -29,6 +36,13 @@ jobs:
       image: ccmagruder/devcontainer-gemm
       options: --gpus all
     steps:
+      - name: cleanup build folder
+        run: |
+          ls -la ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          ls -la ./
+
       - name: nvidia-smi
         run: nvidia-smi
 
@@ -44,7 +58,45 @@ jobs:
       - name: google test
         run: ctest --test-dir build --output-on-failure
 
+      - name: upload benchmark binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: bGemm
+          path: build/tests/bGemm
+
+
+  benchmark:
+    needs: build
+    runs-on: self-hosted
+    container:
+      image: nvidia/cuda:12.6.3-runtime-ubuntu24.04
+      options: --gpus all
+
+    steps:
+      - name: install gtest and benchmark
+        run: |
+          apt -y update
+          apt install -y --no-install-recommends libbenchmark-dev libgtest-dev
+
+      - name: cleanup build folder
+        run: |
+          ls -la ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          ls -la ./
+
+      - name: download benchmark binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: bGemm
+
       - name: google benchmark
         run: |
-          build/tests/bMatrix
-          build/tests/bGemm
+          chmod +x bGemm
+          ./bGemm --benchmark_out=bGemm.json --benchmark_out_format=json
+
+      - name: upload benchmark json results
+        uses: actions/upload-artifact@v4
+        with:
+          name: bGemm.json
+          path: bGemm.json

@@ -12,10 +12,17 @@ find_package(CUDAToolkit REQUIRED)
 
 ############# GEMM LIBRARY ##############
 
-add_library(gemm SHARED
-    ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
-    ${CMAKE_SOURCE_DIR}/src/GemmNaive.cpp
-    ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp)
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_library(gemm STATIC
+        ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
+        ${CMAKE_SOURCE_DIR}/src/GemmNaive.cpp
+        ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp)
+else()
+    add_library(gemm SHARED
+        ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
+        ${CMAKE_SOURCE_DIR}/src/GemmNaive.cpp
+        ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp)
+endif()
 
 target_include_directories(gemm PUBLIC ${CMAKE_SOURCE_DIR}/include)
 
