@@ -3,4 +3,6 @@
 .ccls-cache/
 .ipynb_checkpoints/
 build/
+build-release/
 compile_commands.json
+*.json

@@ -71,7 +71,6 @@ jobs:
     container:
       image: nvidia/cuda:12.6.3-runtime-ubuntu24.04
       options: --gpus all
-
     steps:
       - name: install gtest and benchmark
         run: |
@@ -93,10 +92,46 @@ jobs:
       - name: google benchmark
         run: |
           chmod +x bGemm
-          ./bGemm --benchmark_out=bGemm.json --benchmark_out_format=json
+          ./bGemm --benchmark_out=bGemm.json --benchmark_out_format=json --benchmark_time_unit=s
 
       - name: upload benchmark json results
         uses: actions/upload-artifact@v4
         with:
           name: bGemm.json
           path: bGemm.json
+
+  plots:
+    needs: benchmark
+    runs-on: self-hosted
+    container:
+      image: python:3.13.1
+    steps:
+      - name: cleanup build folder
+        run: |
+          ls -la ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          ls -la ./
+
+      - name: install python dependencies
+        run: pip install jupyter matplotlib pandas papermill seaborn 
+
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: download benchmark results
+        uses: actions/download-artifact@v4
+        with:
+          name: bGemm.json
+
+      - name: generate jupyter plots
+        run: papermill plots.ipynb plots.ipynb
+
+      - name: export notebook to html
+        run: jupyter nbconvert --to html plots.ipynb
+
+      - name: upload jupyter notebook
+        uses: actions/upload-artifact@v4
+        with:
+          name: plots.html
+          path: plots.html
