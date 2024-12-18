@@ -41,18 +41,15 @@ BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, RoundTripCuBLAS, GemmCuBlas)(benchmark:
 }
 
 BENCHMARK_REGISTER_F(GemmFixture, RoundTripCuBLAS)
-    ->RangeMultiplier(2)->Range(64, cublas_n_max)
-    ->Unit(benchmark::kMillisecond);
+    ->RangeMultiplier(2)->Range(64, cublas_n_max);
 
 BENCHMARK_REGISTER_F(GemmFixture, RoundTripNaive)
-    ->RangeMultiplier(2)->Range(64, naive_n_max)
-    ->Unit(benchmark::kMillisecond);
+    ->RangeMultiplier(2)->Range(64, naive_n_max);
 
 BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmCuBLAS, GemmCuBlas)(benchmark::State& state) {
     GemmFixture::Gemm(state);
 }
 
 BENCHMARK_REGISTER_F(GemmFixture, GemmCuBLAS)
-    ->RangeMultiplier(2)->Range(64, cublas_n_max)
-    ->Unit(benchmark::kMillisecond);
+    ->RangeMultiplier(2)->Range(64, cublas_n_max);
 
