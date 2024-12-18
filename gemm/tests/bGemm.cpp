@@ -3,6 +3,14 @@
 #include "Matrix.h"
 #include "Gemm.h"
 
+#if(RELEASE)
+    const int cublas_n_max = 4096;
+    const int naive_n_max = 1024;
+#else
+    const int cublas_n_max = 256;
+    const int naive_n_max = 256;
+#endif
+
 template<typename T>
 class GemmFixture : public benchmark::Fixture {
  protected:
@@ -33,11 +41,11 @@ BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, RoundTripCuBLAS, GemmCuBlas)(benchmark:
 }
 
 BENCHMARK_REGISTER_F(GemmFixture, RoundTripCuBLAS)
-    ->RangeMultiplier(2)->Range(64, 256)
+    ->RangeMultiplier(2)->Range(64, cublas_n_max)
     ->Unit(benchmark::kMillisecond);
 
 BENCHMARK_REGISTER_F(GemmFixture, RoundTripNaive)
-    ->RangeMultiplier(2)->Range(64, 256)
+    ->RangeMultiplier(2)->Range(64, naive_n_max)
     ->Unit(benchmark::kMillisecond);
 
 BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmCuBLAS, GemmCuBlas)(benchmark::State& state) {
@@ -45,6 +53,6 @@ BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmCuBLAS, GemmCuBlas)(benchmark::Stat
 }
 
 BENCHMARK_REGISTER_F(GemmFixture, GemmCuBLAS)
-    ->RangeMultiplier(2)->Range(64, 256)
+    ->RangeMultiplier(2)->Range(64, cublas_n_max)
     ->Unit(benchmark::kMillisecond);
 

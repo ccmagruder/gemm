@@ -27,6 +27,10 @@ find_package(benchmark REQUIRED)
 
 add_executable(bMatrix bMatrix.cpp)
 add_executable(bGemm bGemm.cpp)
+message(ERROR ${CMAKE_BUILD_TYPE})
+if (CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_definitions(bGemm PRIVATE "RELEASE=1")
+endif()
 
 target_link_libraries(bMatrix gemm benchmark::benchmark benchmark::benchmark_main)
 target_link_libraries(bGemm gemm benchmark::benchmark benchmark::benchmark_main)
