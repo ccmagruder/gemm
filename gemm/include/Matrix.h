@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cassert>
 #include <memory>
 
 class Matrix {
@@ -16,7 +17,7 @@ class Matrix {
     static std::unique_ptr<Matrix> makeHost(size_t m, size_t n);
 
     static std::unique_ptr<const Matrix> normalIID(size_t m, size_t n);
-    static std::unique_ptr<const Matrix> fill(size_t m, size_t n, float value);
+    static std::unique_ptr<Matrix> fill(size_t m, size_t n, float value);
 
     // Accessors (Column Major)
     const float& operator()(size_t i, size_t j) const {
@@ -35,6 +36,20 @@ class Matrix {
     // Movers
     void toDevice() const;
     void toHost();
+
+    // Norm
+    float lInfNorm(const Matrix& ref) const {
+        assert(this->m == ref.m);
+        assert(this->n == ref.n);
+
+        const float* ptr = this->getHostPtr();
+        float error = 0.0;
+        for (ptrdiff_t i = 0; i < this->m * this->n; i++) {
+            error = std::max(error, std::abs(ptr[i] - ref.getHostPtr()[i]));
+        }
+        return error;
+    }
+
 
  public:
     const size_t m;
