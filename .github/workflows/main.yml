@@ -32,9 +32,6 @@ jobs:
   build:
     needs: devcontainer
     runs-on: self-hosted
-    # container:
-    #   image: ccmagruder/devcontainer-gemm
-    #   options: --gpus all
     steps:
       - name: cleanup build folder
         run: |
