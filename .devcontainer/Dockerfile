@@ -7,6 +7,9 @@ RUN apt update -y && apt upgrade -y \
     cmake \
     gcc \
     git \
+    intel-mkl \
     libbenchmark-dev \
     libgtest-dev \
+    # Dependency for intel-mkl
+    libomp-dev \
   && rm -rf /var/lib/apt/lists/*

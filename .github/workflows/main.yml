@@ -32,9 +32,9 @@ jobs:
   build:
     needs: devcontainer
     runs-on: self-hosted
-    container:
-      image: ccmagruder/devcontainer-gemm
-      options: --gpus all
+    # container:
+    #   image: ccmagruder/devcontainer-gemm
+    #   options: --gpus all
     steps:
       - name: cleanup build folder
         run: |
@@ -43,20 +43,17 @@ jobs:
           rm -rf ./.??* || true
           ls -la ./
 
-      - name: nvidia-smi
-        run: nvidia-smi
-
       - name: checkout repo
         uses: actions/checkout@v4
 
       - name: cmake configure
-        run: cmake -DCMAKE_BUILD_TYPE=Release -S gemm -B build .
+        run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest cmake -DCMAKE_BUILD_TYPE=Release -S /root/gemm -B /root/build
 
       - name: cmake build
-        run: cmake --build build
+        run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest cmake --build /root/build
 
       - name: google test
-        run: ctest --test-dir build --output-on-failure
+        run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest ctest --test-dir /root/build --output-on-failure
 
       - name: upload benchmark binaries
         uses: actions/upload-artifact@v4
@@ -68,15 +65,7 @@ jobs:
   benchmark:
     needs: build
     runs-on: self-hosted
-    container:
-      image: nvidia/cuda:12.6.3-runtime-ubuntu24.04
-      options: --gpus all
     steps:
-      - name: install gtest and benchmark
-        run: |
-          apt -y update
-          apt install -y --no-install-recommends libbenchmark-dev libgtest-dev
-
       - name: cleanup build folder
         run: |
           ls -la ./
@@ -92,7 +81,7 @@ jobs:
       - name: google benchmark
         run: |
           chmod +x bGemm
-          ./bGemm --benchmark_out=bGemm.json --benchmark_out_format=json --benchmark_time_unit=s
+          docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest /root/bGemm --benchmark_out=/root/bGemm.json --benchmark_out_format=json --benchmark_time_unit=s
 
       - name: upload benchmark json results
         uses: actions/upload-artifact@v4
