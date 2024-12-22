@@ -34,22 +34,22 @@ class GemmFixture : public benchmark::Fixture {
     }
 };
 
-BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, RoundTripCuBLAS, GemmCuBlas)(benchmark::State& state) {
+BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, RoundTripCuBLAS, Gemm<CuBlas>)(benchmark::State& state) {
     GemmFixture::RoundTrip(state);
 }
 
 BENCHMARK_REGISTER_F(GemmFixture, RoundTripCuBLAS)
     ->RangeMultiplier(2)->Range(64, cublas_n_max);
 
-BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmNaive, GemmNaive)(benchmark::State& state) {
+BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmNaive, Gemm<Naive>)(benchmark::State& state) {
     GemmFixture::Gemm(state);
 }
 
-BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmCuBLAS, GemmCuBlas)(benchmark::State& state) {
+BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmCuBLAS, Gemm<CuBlas>)(benchmark::State& state) {
     GemmFixture::Gemm(state);
 }
 
-BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmMKL, GemmMKL)(benchmark::State& state) {
+BENCHMARK_TEMPLATE_DEFINE_F(GemmFixture, GemmMKL, Gemm<Mkl>)(benchmark::State& state) {
     GemmFixture::Gemm(state);
 }
 

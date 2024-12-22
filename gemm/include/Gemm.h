@@ -4,6 +4,9 @@
 
 #include "Matrix.h"
 
+enum Algo { Naive, CuBlas, Mkl };
+
+template<Algo T>
 class Gemm {
  public:
     Gemm(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
@@ -16,9 +19,9 @@ class Gemm {
         return this->get();
     }
 
-    virtual void _setup() = 0;
-    virtual void _run() = 0;
-    virtual void _teardown() = 0;
+    void _setup();
+    void _run();
+    void _teardown();
 
     std::shared_ptr<Matrix> get() { return this->_C; }
 
@@ -28,29 +31,3 @@ class Gemm {
     std::shared_ptr<Matrix> _C;
 };
 
-class GemmNaive : public Gemm {
- public:
-    using Gemm::Gemm;
-
-    void _setup() override;
-    void _run() override;
-    void _teardown() override;
-};
-
-class GemmCuBlas : public Gemm {
- public:
-    using Gemm::Gemm;
-
-    void _setup() override;
-    void _run() override;
-    void _teardown() override;
-};
-
-class GemmMKL : public Gemm {
- public:
-    using Gemm::Gemm;
-
-    void _setup() override;
-    void _run() override;
-    void _teardown() override;
-};
