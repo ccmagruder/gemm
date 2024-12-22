@@ -1,7 +1,7 @@
 # gemm/CMakeLists.txt
 
 cmake_minimum_required(VERSION 3.28)
-project(gemm LANGUAGES CXX)
+project(gemm LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -13,13 +13,19 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
         ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmNaive.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp
-        ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp)
+        ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp
+        ${CMAKE_SOURCE_DIR}/src/GemmCuda.cpp
+        ${CMAKE_SOURCE_DIR}/src/kernels.cu
+    )
 else()
     add_library(gemm SHARED
         ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmNaive.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp
-        ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp)
+        ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp
+        ${CMAKE_SOURCE_DIR}/src/GemmCuda.cpp
+        ${CMAKE_SOURCE_DIR}/src/kernels.cu
+    )
 endif()
 
 target_include_directories(gemm PUBLIC ${CMAKE_SOURCE_DIR}/include)
