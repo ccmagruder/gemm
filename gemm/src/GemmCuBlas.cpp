@@ -27,13 +27,15 @@ std::unique_ptr<CuBlasHandle> CuBlasHandle::instance(new CuBlasHandle);
 
 //////////////////////// GemmCuBlas ///////////////////////////
 
-void GemmCuBlas::_setup() {
+template<>
+void Gemm<CuBlas>::_setup() {
     this->_A->toDevice();
     this->_B->toDevice();
     this->_C = Matrix::makeDevice(this->_A->m, this->_B->n);
 }
 
-void GemmCuBlas::_run() {
+template<>
+void Gemm<CuBlas>::_run() {
     float alpha=1;
     float beta=0;
     cublasStatus_t stat = cublasSgemm(
@@ -55,6 +57,7 @@ void GemmCuBlas::_run() {
     assert(stat==CUBLAS_STATUS_SUCCESS);
 }
 
-void GemmCuBlas::_teardown() {
+template<>
+void Gemm<CuBlas>::_teardown() {
     this->_C->toHost();
 }

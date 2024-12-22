@@ -2,11 +2,13 @@
 
 #include "Gemm.h"
 
-void GemmMKL::_setup() {
+template<>
+void Gemm<Mkl>::_setup() {
     this->_C = Matrix::makeHost(this->_A->m, this->_B->n);
 }
 
-void GemmMKL::_run() {
+template<>
+void Gemm<Mkl>::_run() {
     cblas_sgemm(CblasColMajor,          // Layout
                 CblasNoTrans,           // transa
                 CblasNoTrans,           // transb
@@ -23,4 +25,5 @@ void GemmMKL::_run() {
                 this->_C->m);           // ldc
 }
 
-void GemmMKL::_teardown() {}
+template<>
+void Gemm<Mkl>::_teardown() {}

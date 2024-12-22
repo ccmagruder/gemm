@@ -13,13 +13,13 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
         ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmNaive.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp
-        ${CMAKE_SOURCE_DIR}/src/GemmMKL.cpp)
+        ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp)
 else()
     add_library(gemm SHARED
         ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmNaive.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp
-        ${CMAKE_SOURCE_DIR}/src/GemmMKL.cpp)
+        ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp)
 endif()
 
 target_include_directories(gemm PUBLIC ${CMAKE_SOURCE_DIR}/include)
