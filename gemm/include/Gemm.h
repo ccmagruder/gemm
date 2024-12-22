@@ -19,9 +19,9 @@ class Gemm {
         return this->get();
     }
 
-    void _setup();
-    void _run();
-    void _teardown();
+    void _setup() { static_assert(false); }
+    void _run() { static_assert(false); }
+    void _teardown() { static_assert(false); };
 
     std::shared_ptr<Matrix> get() { return this->_C; }
 
@@ -30,4 +30,16 @@ class Gemm {
     std::unique_ptr<const Matrix> _B;
     std::shared_ptr<Matrix> _C;
 };
+
+template<> void Gemm<Naive>::_setup();
+template<> void Gemm<Naive>::_run();
+template<> void Gemm<Naive>::_teardown();
+
+template<> void Gemm<CuBlas>::_setup();
+template<> void Gemm<CuBlas>::_run();
+template<> void Gemm<CuBlas>::_teardown();
+
+template<> void Gemm<Mkl>::_setup();
+template<> void Gemm<Mkl>::_run();
+template<> void Gemm<Mkl>::_teardown();
 
