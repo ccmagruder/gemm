@@ -45,3 +45,12 @@ class GemmCuBlas : public Gemm {
     void _run() override;
     void _teardown() override;
 };
+
+class GemmMKL : public Gemm {
+ public:
+    using Gemm::Gemm;
+
+    void _setup() override;
+    void _run() override;
+    void _teardown() override;
+};

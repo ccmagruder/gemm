@@ -3,7 +3,6 @@ project(gemm)
 # Unit Tests
 
 find_package(GTest REQUIRED)
-include(GoogleTest)
 
 add_executable(tMatrix tMatrix.cpp)
 add_executable(tGemm tGemm.cpp)
