@@ -1,0 +1,7 @@
+CompileFlags:
+  Add: [--no-cuda-version-check]
+  Remove: [
+    -Xcompiler=-fPIC,
+    -forward-unknown-to-host-compiler,
+    --generate-code=arch=*
+  ]
