@@ -4,7 +4,7 @@
 
 #include "Matrix.h"
 
-enum Algo { Naive, CuBlas, Mkl };
+enum Algo { Naive, CuBlas, Mkl, Cuda };
 
 template<Algo T>
 class Gemm {
@@ -42,4 +42,8 @@ template<> void Gemm<CuBlas>::_teardown();
 template<> void Gemm<Mkl>::_setup();
 template<> void Gemm<Mkl>::_run();
 template<> void Gemm<Mkl>::_teardown();
+
+template<> void Gemm<Cuda>::_setup();
+template<> void Gemm<Cuda>::_run();
+template<> void Gemm<Cuda>::_teardown();
 

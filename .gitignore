@@ -1,6 +1,6 @@
 .gh_pat
 .private.key
-.ccls-cache/
+.cache/
 .ipynb_checkpoints/
 build/
 build-release/

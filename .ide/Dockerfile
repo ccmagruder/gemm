@@ -5,7 +5,7 @@ FROM ccmagruder/devcontainer-gemm:latest
 RUN apt update -y && apt upgrade -y \
   && apt install -y --no-install-recommends \
     bat \
-    ccls \
+    clangd \
     curl \
     fd-find \
     gem \
