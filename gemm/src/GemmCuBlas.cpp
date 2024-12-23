@@ -54,6 +54,7 @@ void Gemm<CuBlas>::_run() {
         this->_C->getDevPtr(), // C
         this->_C->m);          // ldc
 
+    cudaDeviceSynchronize();
     assert(stat==CUBLAS_STATUS_SUCCESS);
 }
 
