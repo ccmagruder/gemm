@@ -1,3 +1,3 @@
 #pragma once
 
-void sgemm(const int m, const int n, const int k, const float* const a, const float* const b, float* c);
+void sgemm(const uint M, const uint N, const uint K, const float* const a, const float* const b, float* c);

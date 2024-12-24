@@ -23,6 +23,7 @@ TEST(tGemm, GemmCudaDims) {
     std::unique_ptr<Matrix> A = Matrix::fill(m, k, 0.0);
     std::unique_ptr<Matrix> B = Matrix::fill(k, n, 0.0);
     std::unique_ptr<Matrix> C = Matrix::fill(m, n, 0.0);
+    C->toDevice();
     (*A)(1, 0) = 1.0;
     (*A)(0, 1) = -1.0;
     (*B)(0, 0) = -4.0;
