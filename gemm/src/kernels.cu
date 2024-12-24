@@ -1,27 +1,35 @@
 #include <cassert>
 #include "kernels.cuh"
 
-__global__ void __sgemm(const int k,
+__global__ void __sgemm(const uint M,
+                        const uint N,
+                        const uint K,
                         const float* const a,
                         const float* const b,
                         float* c) {
-    int aid, bid, cid = blockIdx.x + blockIdx.y * gridDim.x;
+    const uint i = blockIdx.x * blockDim.x + threadIdx.x;
+    const uint j = blockIdx.y * blockDim.y + threadIdx.y;
+    if (i > M || j > N)
+        return;
+
+    uint aid, bid, cid = i + j * M;
     c[cid] = 0.0;
-    for (int i = 0; i < k; i++) {
-        aid = blockIdx.x + gridDim.x * i;
-        bid = blockIdx.y * k + i;
+    for (uint k = 0; k < K; k++) {
+        aid = i + M * k;
+        bid = j * K + k;
         c[cid] += a[aid] * b[bid];
     }
 }
 
-void sgemm(const int m,
-           const int n,
-           const int k,
+void sgemm(const uint M,
+           const uint N,
+           const uint K,
            const float* const a,
            const float* const b,
            float* c) {
-    dim3 grid_size(m, n, 1);
-    dim3 block_size(1, 1, 1);
-    __sgemm<<<grid_size, block_size>>>(k, a, b, c);
+    const uint W = 32;
+    dim3 gridDim(M / W + (M % W != 0), N / W + (N % W != 0), 1);
+    dim3 blockDim(W, W, 1);
+    __sgemm<<<gridDim, blockDim>>>(M, N, K, a, b, c);
     cudaDeviceSynchronize();
 }
