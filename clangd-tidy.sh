@@ -12,6 +12,8 @@ clangd-tidy -p build --fail-on-severity warn \
     gemm/**/*.cpp \
     gemm/**/*.cuh \
     gemm/**/*.cu
+EXIT=$?
 
 mv .clangd .clangd-ci
 mv .clangd-orig .clangd
+exit $EXIT
