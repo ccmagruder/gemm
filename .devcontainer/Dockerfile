@@ -5,6 +5,7 @@ RUN apt update -y && apt upgrade -y \
     build-essential \
     clang \
     clang-format \
+    clang-tidy \
     cmake \
     gcc \
     git \
