@@ -3,7 +3,6 @@
 #include <cstddef>
 #include <memory>
 #include <random>
-#include "cuda_runtime.h"
 
 std::unique_ptr<Matrix> Matrix::makeDevice(size_t m, size_t n) {
     std::unique_ptr<Matrix> A(new Matrix(m, n));
