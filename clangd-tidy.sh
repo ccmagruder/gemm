@@ -7,7 +7,7 @@
 mv .clangd .clangd-orig
 mv .clangd-ci .clangd
 
-clangd-tidy -p build \
+clangd-tidy -p build --fail-on-severity warn \
     gemm/**/*.h \
     gemm/**/*.cpp \
     gemm/**/*.cuh \
