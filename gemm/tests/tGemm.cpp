@@ -1,12 +1,13 @@
 #include "gtest/gtest.h"
 
-#include "Matrix.h"
 #include "Gemm.h"
+#include "Matrix.h"
 
 template <typename T>
 class tGemm : public testing::Test {};
 
-using Types = ::testing::Types<Gemm<Naive>, Gemm<CuBlas>, Gemm<Mkl>, Gemm<Cuda>>;
+using Types =
+    ::testing::Types<Gemm<Naive>, Gemm<CuBlas>, Gemm<Mkl>, Gemm<Cuda>>;
 TYPED_TEST_SUITE(tGemm, Types);
 
 TYPED_TEST(tGemm, Ones) {
@@ -19,7 +20,7 @@ TYPED_TEST(tGemm, Ones) {
 }
 
 TEST(tGemm, GemmCudaDims) {
-    const size_t m=2, k=3, n=3;
+    const size_t m = 2, k = 3, n = 3;
     std::unique_ptr<Matrix> A = Matrix::fill(m, k, 0.0);
     std::unique_ptr<Matrix> B = Matrix::fill(k, n, 0.0);
     std::unique_ptr<Matrix> C = Matrix::fill(m, n, 0.0);
