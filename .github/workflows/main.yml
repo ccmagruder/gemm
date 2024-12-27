@@ -55,7 +55,7 @@ jobs:
         run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest cmake --build /root/build
 
       - name: clang-tidy
-        run: docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && ./clang-tidy.sh"
+        run: docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && ./clangd-tidy.sh"
 
       - name: google test
         run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest ctest --test-dir /root/build --output-on-failure
