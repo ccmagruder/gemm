@@ -5,9 +5,9 @@
 
 class Matrix {
     Matrix(size_t m, size_t n)
-            : m(m), n(n), _host_ptr(new float[m*n]), _dev_ptr(nullptr) {}
+        : m(m), n(n), _host_ptr(new float[m * n]), _dev_ptr(nullptr) {}
 
- public:
+   public:
     Matrix() = delete;
     Matrix(const Matrix&) = delete;
     Matrix& operator=(const Matrix&) = delete;
@@ -21,10 +21,10 @@ class Matrix {
 
     // Accessors (Column Major)
     const float& operator()(size_t i, size_t j) const {
-        return (this->_host_ptr.get() + this->m*j)[i];
+        return (this->_host_ptr.get() + this->m * j)[i];
     }
     float& operator()(size_t i, size_t j) {
-        return (this->_host_ptr.get() + this->m*j)[i];
+        return (this->_host_ptr.get() + this->m * j)[i];
     }
 
     const float* const getHostPtr() const { return this->_host_ptr.get(); }
@@ -50,11 +50,11 @@ class Matrix {
         return error;
     }
 
-
- public:
+   public:
     const size_t m;
     const size_t n;
- protected:
+
+   protected:
     void _devAlloc() const;
 
     std::unique_ptr<float[], std::default_delete<float[]>> _host_ptr;
@@ -63,4 +63,3 @@ class Matrix {
     };
     mutable std::unique_ptr<float, DevDeleter> _dev_ptr;
 };
-

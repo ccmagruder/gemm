@@ -4,6 +4,7 @@ RUN apt update -y && apt upgrade -y \
   && apt install -y --no-install-recommends \
     build-essential \
     clang \
+    clang-format \
     cmake \
     gcc \
     git \
