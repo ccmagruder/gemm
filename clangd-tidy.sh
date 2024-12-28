@@ -4,8 +4,10 @@
 # files: one for the language server; the other for the CI.
 # Because clangd-tidy does not support separate paths for config files,
 # we break these into separate files and do this moving hack.
-mv .clangd .clangd-orig
-mv .clangd-ci .clangd
+cp .clangd .clangd-orig
+echo "Diagnostics:" >> .clangd
+echo "  ClangTidy:" >> .clangd 
+echo "    FastCheckFilter: None" >> .clangd
 
 clangd-tidy -p build --fail-on-severity warn \
     gemm/**/*.h \
@@ -14,6 +16,5 @@ clangd-tidy -p build --fail-on-severity warn \
     gemm/**/*.cu
 EXIT=$?
 
-mv .clangd .clangd-ci
 mv .clangd-orig .clangd
 exit $EXIT

@@ -5,3 +5,8 @@ CompileFlags:
     -forward-unknown-to-host-compiler,
     --generate-code=arch=*
   ]
+Diagnostics:
+  ClangTidy:
+    Add: 
+      - misc-include-cleaner
+    FastCheckFilter: None # Run all tests
