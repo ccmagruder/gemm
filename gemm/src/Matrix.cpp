@@ -1,9 +1,9 @@
 #include "Matrix.h"
+#include <cuda_runtime.h>  // need to use angle brackets so doesn't get marked as 'unused-include'
 #include <cassert>
 #include <cstddef>
 #include <memory>
 #include <random>
-#include <cuda_runtime.h>  // need to use angle brackets so doesn't get marked as 'unused-include'
 
 std::unique_ptr<Matrix> Matrix::makeDevice(size_t m, size_t n) {
     std::unique_ptr<Matrix> A(new Matrix(m, n));
