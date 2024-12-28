@@ -9,4 +9,3 @@ Diagnostics:
   ClangTidy:
     Add: 
       - misc-include-cleaner
-    FastCheckFilter: None # Run all tests
