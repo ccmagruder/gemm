@@ -43,10 +43,6 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v4
 
-      - name: clang-format
-        run: |
-          docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest ls /root
-          docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && clang-format --dry-run --Werror gemm/**/*.h gemm/**/*.cpp gemm/**/*.cuh gemm/**/*.cu"
 
       - name: cmake configure
         run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest cmake -DCMAKE_BUILD_TYPE=Release -S /root/gemm -B /root/build
@@ -56,6 +52,10 @@ jobs:
 
       - name: clang-tidy
         run: docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && source /.venv/bin/activate && ./clangd-tidy.sh"
+      
+      - name: clang-format
+        run: |
+          docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && clang-format --dry-run --Werror gemm/**/*.h gemm/**/*.cpp gemm/**/*.cuh gemm/**/*.cu"
 
       - name: google test
         run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest ctest --test-dir /root/build --output-on-failure
