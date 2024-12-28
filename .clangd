@@ -10,6 +10,7 @@ Diagnostics:
     FastCheckFilter: None
     Add: 
       - misc-include-cleaner
+      - readability-identifier-naming
     CheckOptions:
       readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
       readability-identifier-naming.VariableCase: lower_case
