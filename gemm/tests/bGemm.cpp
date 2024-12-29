@@ -6,7 +6,7 @@
 #if (RELEASE)
 const int cublas_n_max = 4096;
 const int mkl_n_max = 4096;
-const int naive_n_max = 2048;
+const int naive_n_max = 1024;
 const int cuda_n_max = 4096;
 #else
 const int cublas_n_max = 256;

@@ -29,6 +29,22 @@ jobs:
       - name: nvidia-smi
         run: docker compose run --rm devcontainer nvidia-smi
 
+  jupyter:
+    runs-on: self-hosted
+    steps:
+      - name: cleanup build folder
+        run: |
+          ls -la ./
+          rm -rf ./* || true
+          rm -rf ./.??* || true
+          ls -la ./
+
+      - name: checkout repo
+        uses: actions/checkout@v4
+
+      - name: docker build jupyter
+        run: docker compose build jupyter
+
   build:
     needs: devcontainer
     runs-on: self-hosted
@@ -92,10 +108,8 @@ jobs:
           path: bGemm.json
 
   plots:
-    needs: benchmark
+    needs: [benchmark, jupyter]
     runs-on: self-hosted
-    container:
-      image: python:3.13.1
     steps:
       - name: cleanup build folder
         run: |
@@ -103,9 +117,6 @@ jobs:
           rm -rf ./* || true
           rm -rf ./.??* || true
           ls -la ./
-
-      - name: install python dependencies
-        run: pip install jupyter matplotlib pandas papermill seaborn 
 
       - name: checkout repo
         uses: actions/checkout@v4
@@ -116,10 +127,10 @@ jobs:
           name: bGemm.json
 
       - name: generate jupyter plots
-        run: papermill plots.ipynb plots.ipynb
+        run: docker run --rm -v .:/root ccmagruder/jupyter-gemm:latest bash -c "cd /root && papermill plots.ipynb plots.ipynb"
 
       - name: export notebook to html
-        run: jupyter nbconvert --to html plots.ipynb
+        run: docker run --rm -v .:/root ccmagruder/jupyter-gemm:latest bash -c "cd /root && jupyter nbconvert --to html plots.ipynb"
 
       - name: upload jupyter notebook
         uses: actions/upload-artifact@v4
