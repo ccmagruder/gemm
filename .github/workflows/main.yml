@@ -104,8 +104,7 @@ jobs:
       - name: google benchmark
         run: |
           chmod +x bGemm bGemmSweep
-          docker compose run --rm devcontainer bash -c "ls -lah && pwd && ./bGemm --benchmark_out=bGemm.json --benchmark_out_format=json --benchmark_time_unit=s && ./bGemmSweep --benchmark_out=bGemmSweep.json --benchmark_out_format=json --benchmark_time_unit=s"
-
+          docker compose run --rm devcontainer ./benchmark.sh .
       - name: upload benchmark json results
         uses: actions/upload-artifact@v4
         with:
