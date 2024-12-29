@@ -18,8 +18,7 @@ RUN apt update -y && apt upgrade -y \
     python3 \
     python3-pip \
     python3-venv \
-  && rm -rf /var/lib/apt/lists/* 
-  
-RUN python3 -m venv /.venv \
+  && rm -rf /var/lib/apt/lists/* \
+  && python3 -m venv /.venv \
   && PATH=/.venv/bin:$PATH pip install clangd-tidy \
   && echo "source /.venv/bin/activate" >> ~/.bashrc 
