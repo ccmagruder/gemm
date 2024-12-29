@@ -1,11 +1,6 @@
 #include <cstddef>
 #include "Gemm.h"
 
-template <>
-void Gemm<Host>::_setup() {
-  this->_C = Matrix::makeHost(this->_A->m, this->_B->n);
-}
-
 void GemmNaive::_run() {
   for (size_t i = 0; i < this->_C->m; i++) {
     for (size_t j = 0; j < this->_C->n; j++) {
@@ -16,6 +11,3 @@ void GemmNaive::_run() {
     }
   }
 }
-
-template <>
-void Gemm<Host>::_teardown() {}

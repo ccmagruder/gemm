@@ -15,6 +15,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if (CMAKE_BUILD_TYPE STREQUAL "Release")
     add_library(gemm STATIC
         ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
+        ${CMAKE_SOURCE_DIR}/src/Gemm.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmNaive.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp
@@ -24,6 +25,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
 else()
     add_library(gemm SHARED
         ${CMAKE_SOURCE_DIR}/src/Matrix.cpp
+        ${CMAKE_SOURCE_DIR}/src/Gemm.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmNaive.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmCuBlas.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp
