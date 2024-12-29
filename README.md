@@ -32,11 +32,13 @@ ctest --test-dir build
 ```
 docker compose build devcontainer
 docker commpose build ide
-docker compose up -d ide
-docker exec ide zsh
-...
-exit
-docker compose down ide
+docker compose run --rm --name gemm-ide-{...} ide
+```
+
+### Jupyter Server
+```
+docker compose build jupyter
+docker compose run --service-ports --rm --name gemm-jupyter-{...} jupyter
 ```
 
 ### Commit

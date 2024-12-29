@@ -56,6 +56,19 @@ services:
               count: 1
               capabilities: [gpu]
 
+  jupyter:
+    image: ccmagruder/jupyter-gemm:latest
+    build:
+      dockerfile: Dockerfile
+      context: .jupyter
+    ports:
+      - 8888:8888
+    command: bash -c "cd /root/gemm && jupyter lab --allow-root --ip 0.0.0.0"
+    volumes:
+      - type: bind
+        source: .
+        target: /root/gemm
+
   runner:
     image: ccmagruder/runner-gemm:latest
     build:
