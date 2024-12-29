@@ -60,10 +60,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: cmake configure
-        run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest cmake -DCMAKE_BUILD_TYPE=Release -S /root/gemm -B /root/build
+        run: docker compose run --rm devcontainer cmake -DCMAKE_BUILD_TYPE=Release -S gemm -B build
 
       - name: cmake build
-        run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest cmake --build /root/build
+        run: docker compose run --rm devcontainer cmake --build build
 
       - name: clang-tidy
         run: docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && source /.venv/bin/activate && ./clangd-tidy.sh"
@@ -73,13 +73,13 @@ jobs:
           docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && clang-format --dry-run --Werror gemm/**/*.h gemm/**/*.cpp gemm/**/*.cuh gemm/**/*.cu"
 
       - name: google test
-        run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest ctest --test-dir /root/build --output-on-failure
+        run: docker compose run --rm devcontainer ctest --test-dir build --output-on-failure
 
       - name: upload benchmark binaries
         uses: actions/upload-artifact@v4
         with:
-          name: bGemm
-          path: build/tests/bGemm
+          name: binaries
+          path: build/tests/b*
 
 
   benchmark:
@@ -93,21 +93,26 @@ jobs:
           rm -rf ./.??* || true
           ls -la ./
 
+      - name: checkout repo
+        uses: actions/checkout@v4
+
       - name: download benchmark binaries
         uses: actions/download-artifact@v4
         with:
-          name: bGemm
+          name: binaries
 
       - name: google benchmark
         run: |
-          chmod +x bGemm
-          docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest /root/bGemm --benchmark_out=/root/bGemm.json --benchmark_out_format=json --benchmark_time_unit=s
+          chmod +x bGemm bGemmSweep
+          docker compose run --rm devcontainer bash -c "ls -lah && pwd && ./bGemm --benchmark_out=bGemm.json --benchmark_out_format=json --benchmark_time_unit=s && ./bGemmSweep --benchmark_out=bGemmSweep.json --benchmark_out_format=json --benchmark_time_unit=s"
 
       - name: upload benchmark json results
         uses: actions/upload-artifact@v4
         with:
-          name: bGemm.json
-          path: bGemm.json
+          name: results-json
+          path: |
+            bGemm.json
+            bGemmSweep.json
 
   plots:
     needs: [benchmark, jupyter]
@@ -126,13 +131,13 @@ jobs:
       - name: download benchmark results
         uses: actions/download-artifact@v4
         with:
-          name: bGemm.json
+          name: results-json
 
       - name: generate jupyter plots
-        run: docker run --rm -v .:/root ccmagruder/jupyter-gemm:latest bash -c "cd /root && papermill plots.ipynb plots.ipynb"
+        run: docker compose run --rm jupyter papermill plots.ipynb plots.ipynb
 
       - name: export notebook to html
-        run: docker run --rm -v .:/root ccmagruder/jupyter-gemm:latest bash -c "cd /root && jupyter nbconvert --to html plots.ipynb"
+        run: docker compose run --rm jupyter jupyter nbconvert --to html plots.ipynb
 
       - name: upload jupyter notebook
         uses: actions/upload-artifact@v4

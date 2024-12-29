@@ -8,6 +8,7 @@ services:
       - type: bind
         source: .
         target: /root/gemm
+    working_dir: /root/gemm
     deploy:
       resources:
         reservations:
@@ -63,7 +64,8 @@ services:
       context: .jupyter
     ports:
       - 8888:8888
-    command: bash -c "cd /root/gemm && jupyter lab --allow-root --ip 0.0.0.0"
+    command: bash -c "jupyter lab --allow-root --ip 0.0.0.0"
+    working_dir: /root/gemm
     volumes:
       - type: bind
         source: .
