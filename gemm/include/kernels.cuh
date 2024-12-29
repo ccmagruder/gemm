@@ -5,4 +5,5 @@ void sgemm(const uint M,
            const uint K,
            const float* const a,
            const float* const b,
-           float* c);
+           float* c,
+           const uint W);

@@ -26,8 +26,8 @@ void sgemm(const uint M,
            const uint K,
            const float* const a,
            const float* const b,
-           float* c) {
-    const uint W = 32;
+           float* c,
+           const uint W) {
     dim3 gridDim(M / W + (M % W != 0), N / W + (N % W != 0), 1);
     dim3 blockDim(W, W, 1);
     __sgemm<<<gridDim, blockDim>>>(M, N, K, a, b, c);
