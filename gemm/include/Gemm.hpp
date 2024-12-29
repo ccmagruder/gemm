@@ -42,4 +42,3 @@ void Gemm<Device>::_setup();
 
 template <>
 void Gemm<Device>::_teardown();
-
