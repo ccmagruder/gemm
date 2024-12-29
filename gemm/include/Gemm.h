@@ -4,57 +4,65 @@
 
 #include "Matrix.h"
 
-enum Algo { Naive, CuBlas, Mkl, Cuda };
+enum Memory { Host, Device };
 
-template <Algo T>
+template <Memory T>
 class Gemm {
-   public:
-    Gemm(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
-        : _A(std::move(A)), _B(std::move(B)) {}
+ public:
+  Gemm(std::unique_ptr<const Matrix> A, std::unique_ptr<const Matrix> B)
+      : _A(std::move(A)), _B(std::move(B)) {}
 
-    std::shared_ptr<Matrix> compute() {
-        this->_setup();
-        this->_run();
-        this->_teardown();
-        return this->get();
-    }
+  std::shared_ptr<Matrix> compute() {
+    this->_setup();
+    this->_run();
+    this->_teardown();
+    return this->get();
+  }
 
-    void _setup() { static_assert(false); }
-    void _run() { static_assert(false); }
-    void _teardown() { static_assert(false); };
+  void _setup() { static_assert(false); }
+  virtual void _run() = 0;
+  void _teardown() { static_assert(false); };
 
-    std::shared_ptr<Matrix> get() { return this->_C; }
+  std::shared_ptr<Matrix> get() { return this->_C; }
 
-   protected:
-    std::unique_ptr<const Matrix> _A;
-    std::unique_ptr<const Matrix> _B;
-    std::shared_ptr<Matrix> _C;
+ protected:
+  std::unique_ptr<const Matrix> _A;
+  std::unique_ptr<const Matrix> _B;
+  std::shared_ptr<Matrix> _C;
 };
 
 template <>
-void Gemm<Naive>::_setup();
-template <>
-void Gemm<Naive>::_run();
-template <>
-void Gemm<Naive>::_teardown();
+void Gemm<Host>::_setup();
 
 template <>
-void Gemm<CuBlas>::_setup();
-template <>
-void Gemm<CuBlas>::_run();
-template <>
-void Gemm<CuBlas>::_teardown();
+void Gemm<Host>::_teardown();
 
 template <>
-void Gemm<Mkl>::_setup();
-template <>
-void Gemm<Mkl>::_run();
-template <>
-void Gemm<Mkl>::_teardown();
+void Gemm<Device>::_setup();
 
 template <>
-void Gemm<Cuda>::_setup();
-template <>
-void Gemm<Cuda>::_run();
-template <>
-void Gemm<Cuda>::_teardown();
+void Gemm<Device>::_teardown();
+
+class GemmNaive : public Gemm<Host> {
+ public:
+  using Gemm<Host>::Gemm;
+  void _run() override;
+};
+
+class GemmMkl : public Gemm<Host> {
+ public:
+  using Gemm<Host>::Gemm;
+  void _run() override;
+};
+
+class GemmCuBlas : public Gemm<Device> {
+ public:
+  using Gemm<Device>::Gemm;
+  void _run() override;
+};
+
+class GemmCuda : public Gemm<Device> {
+ public:
+  using Gemm<Device>::Gemm;
+  void _run() override;
+};
