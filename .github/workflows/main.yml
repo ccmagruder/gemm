@@ -51,7 +51,7 @@ jobs:
         run: docker run --rm --gpus all -v .:/root ccmagruder/devcontainer-gemm:latest cmake --build /root/build
 
       - name: clang-tidy
-        run: docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && source /.venv/bin/activate && ./clangd-tidy-ci.sh"
+        run: docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && source /.venv/bin/activate && ./clangd-tidy.sh"
       
       - name: clang-format
         run: |
