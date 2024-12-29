@@ -20,5 +20,10 @@ RUN apt update -y && apt upgrade -y \
     python3-venv \
   && rm -rf /var/lib/apt/lists/* \
   && python3 -m venv /.venv \
+  # Clangd-tidy is documented at https://github.com/lljbash/clangd-tidy
+  # It provides a similar interface to clang-tidy using clangd as the backend
+  # enabling it to work with CUDA without throwing misleading errors
   && PATH=/.venv/bin:$PATH pip install clangd-tidy \
   && echo "source /.venv/bin/activate" >> ~/.bashrc 
+
+
