@@ -25,6 +25,6 @@ class GemmCuBlas : public Gemm<Device> {
 class GemmCuda : public Gemm<Device> {
    public:
     using Gemm<Device>::Gemm;
-    void _run() override { this->__run(32); }
-    void __run(const uint W);
+    void _run() override { this->__run(32, 32); }
+    void __run(const uint V, const uint W);
 };
