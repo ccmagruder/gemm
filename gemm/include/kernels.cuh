@@ -1,5 +1,7 @@
 #pragma once
 
+void cudaCheck();
+
 void sgemm(const int M,
            const int N,
            const int K,

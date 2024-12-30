@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cassert>
-
 #include "Gemm.hpp"
 
 class GemmNaive : public Gemm<Host> {
