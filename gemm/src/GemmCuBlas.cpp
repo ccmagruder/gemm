@@ -1,13 +1,14 @@
 #include "cublas_v2.h"
 
 #include "Gemm.h"
+#include "kernels.cuh"
 
 ///////////////////// CuBLAS Handle Singleton /////////////////
 
 class CuBlasHandle {
     CuBlasHandle() {
         cublasStatus_t stat = cublasCreate(&this->_handle);
-        assert(stat == CUBLAS_STATUS_SUCCESS);
+        cudaCheck();
     }
 
    public:
@@ -43,5 +44,5 @@ void GemmCuBlas::_run() {
                                       this->_C->m);           // ldc
 
     cudaDeviceSynchronize();
-    assert(stat == CUBLAS_STATUS_SUCCESS);
+    cudaCheck();
 }

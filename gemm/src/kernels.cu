@@ -1,5 +1,16 @@
-#include <cassert>
+#include <stdexcept>
+
 #include "kernels.cuh"
+
+void cudaCheck() {
+    cudaError_t code = cudaPeekAtLastError();
+    if (code != cudaSuccess) {
+        char msg[100];
+        sprintf(msg, "GPU kernel assert: %s:%d \"%s\"\n", __FILE__, __LINE__,
+                cudaGetErrorString(code));
+        throw std::runtime_error(msg);
+    }
+}
 
 __global__ void __sgemm(const int M,
                         const int N,
@@ -33,4 +44,5 @@ void sgemm(const int M,
     dim3 blockDim(V, W, 1);
     __sgemm<<<gridDim, blockDim>>>(M, N, K, a, b, c);
     cudaDeviceSynchronize();
+    cudaCheck();
 }

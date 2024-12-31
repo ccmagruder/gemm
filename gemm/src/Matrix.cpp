@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <memory>
 #include <random>
+#include "kernels.cuh"
 
 std::unique_ptr<Matrix> Matrix::makeDevice(size_t m, size_t n) {
     std::unique_ptr<Matrix> A(new Matrix(m, n));
@@ -50,7 +51,7 @@ void Matrix::_devAlloc() const {
     if (!this->_dev_ptr) {
         float* ptr;
         cudaStat = cudaMalloc((void**)&ptr, this->m * this->n * sizeof(float));
-        assert(cudaStat == cudaSuccess);
+        cudaCheck();
         this->_dev_ptr = std::unique_ptr<float, DevDeleter>(ptr);
     }
 }
@@ -61,7 +62,7 @@ void Matrix::toDevice() const {
     cudaStat =
         cudaMemcpy(this->_dev_ptr.get(), this->_host_ptr.get(),
                    this->m * this->n * sizeof(float), cudaMemcpyHostToDevice);
-    assert(cudaStat == cudaSuccess);
+    cudaCheck();
 }
 
 void Matrix::toHost() {
@@ -69,7 +70,7 @@ void Matrix::toHost() {
     cudaStat =
         cudaMemcpy(this->_host_ptr.get(), this->_dev_ptr.get(),
                    this->m * this->n * sizeof(float), cudaMemcpyDeviceToHost);
-    assert(cudaStat == cudaSuccess);
+    cudaCheck();
 }
 
 float Matrix::lInfNorm(const Matrix& ref) const {
