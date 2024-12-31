@@ -38,17 +38,7 @@ class Matrix {
     void toHost();
 
     // Norm
-    float lInfNorm(const Matrix& ref) const {
-        assert(this->m == ref.m);
-        assert(this->n == ref.n);
-
-        const float* ptr = this->getHostPtr();
-        float error = 0.0;
-        for (ptrdiff_t i = 0; i < this->m * this->n; i++) {
-            error = std::max(error, std::abs(ptr[i] - ref.getHostPtr()[i]));
-        }
-        return error;
-    }
+    float lInfNorm(const Matrix& ref) const;
 
    public:
     const size_t m;
