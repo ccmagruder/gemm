@@ -26,12 +26,13 @@ __global__ void __sgemm(const int M,
     const float* a = A + i;          // a = A[i, 0]
     const float* b = B + j * K;      // b = B[0, j]
     float* const c = C + i + j * M;  // c = C[i, j]
-    *c = 0.0;
+    float sum = 0.0;
     for (int k = 0; k < K; k++) {
-        *c += *a * *b;  // C[i, j] += A[i, k] * B[k, j]
-        a += M;         // A[i, k] -> A[i, k + 1]
-        b++;            // B[k, j] -> B[k + 1, j]
+        sum += *a * *b;  // C[i, j] += A[i, k] * B[k, j]
+        a += M;          // A[i, k] -> A[i, k + 1]
+        b++;             // B[k, j] -> B[k + 1, j]
     }
+    *c = sum;
 }
 
 void sgemm(const int M,
