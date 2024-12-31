@@ -39,6 +39,9 @@ class Matrix {
     // Norm
     float lInfNorm(const Matrix& ref) const;
 
+    // Deep Copy
+    std::unique_ptr<const Matrix> copy() const;
+
    public:
     const size_t m;
     const size_t n;
