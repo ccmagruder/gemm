@@ -4,6 +4,7 @@ RUN apt update -y && apt upgrade -y \
   && apt install -y --no-install-recommends \
     build-essential \
     clang \
+    clangd \
     clang-format \
     cmake \
     gcc \
@@ -13,4 +14,11 @@ RUN apt update -y && apt upgrade -y \
     libgtest-dev \
     # Dependency for intel-mkl
     libomp-dev \
-  && rm -rf /var/lib/apt/lists/*
+    # Dependency for clangd-tidy
+    python3 \
+    python3-pip \
+    python3-venv \
+  && rm -rf /var/lib/apt/lists/* \
+  && python3 -m venv /.venv \
+  && PATH=/.venv/bin:$PATH pip install clangd-tidy \
+  && echo "source /.venv/bin/activate" >> ~/.bashrc 
