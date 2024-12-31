@@ -84,3 +84,11 @@ float Matrix::lInfNorm(const Matrix& ref) const {
     }
     return error;
 }
+
+std::unique_ptr<const Matrix> Matrix::copy() const {
+    std::unique_ptr<Matrix> A = Matrix::fill(this->m, this->n, 0.0);
+    for (ptrdiff_t i = 0; i < this->m * this->n; i++) {
+        A->getHostPtr()[i] = this->getHostPtr()[i];
+    }
+    return A;
+}

@@ -27,3 +27,10 @@ TEST(tMatrix, lInfNorm) {
     (*B)(1, 1) = 3.14;
     EXPECT_NEAR(A->lInfNorm(*B), 2.1, 1e-5);
 }
+
+TEST(tMatrix, copy) {
+    size_t M = 9, N = 1025;
+    std::unique_ptr<const Matrix> A = Matrix::normalIID(M, N);
+    std::unique_ptr<const Matrix> B = A->copy();
+    EXPECT_NEAR(A->lInfNorm(*B), 0.0, 1e-7);
+}
