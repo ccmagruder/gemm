@@ -29,5 +29,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
     target_compile_definitions(bGemm PRIVATE "RELEASE=1")
 endif()
 
+add_executable(bGemmSweep bGemmSweep.cpp)
+
 target_link_libraries(bGemm gemm benchmark::benchmark benchmark::benchmark_main)
+target_link_libraries(bGemmSweep gemm benchmark::benchmark benchmark::benchmark_main)
 
