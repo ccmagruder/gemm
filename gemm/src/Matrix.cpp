@@ -71,3 +71,15 @@ void Matrix::toHost() {
                    this->m * this->n * sizeof(float), cudaMemcpyDeviceToHost);
     assert(cudaStat == cudaSuccess);
 }
+
+float Matrix::lInfNorm(const Matrix& ref) const {
+    assert(this->m == ref.m);
+    assert(this->n == ref.n);
+
+    const float* ptr = this->getHostPtr();
+    float error = 0.0;
+    for (ptrdiff_t i = 0; i < this->m * this->n; i++) {
+        error = std::max(error, std::abs(ptr[i] - ref.getHostPtr()[i]));
+    }
+    return error;
+}

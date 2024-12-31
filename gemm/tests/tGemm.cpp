@@ -8,8 +8,7 @@
 template <typename T>
 class tGemm : public testing::Test {};
 
-using Types =
-    ::testing::Types<Gemm<Naive>, Gemm<CuBlas>, Gemm<Mkl>, Gemm<Cuda>>;
+using Types = ::testing::Types<GemmNaive, GemmCuBlas, GemmMkl, GemmCuda>;
 TYPED_TEST_SUITE(tGemm, Types);
 
 TYPED_TEST(tGemm, Ones) {
@@ -34,7 +33,7 @@ TEST(tGemm, GemmCudaDims) {
     (*C)(0, 1) = -3.0;
     (*B)(0, 2) = 2.0;
     (*C)(1, 2) = 2.0;
-    Gemm<Cuda> mult(std::move(A), std::move(B));
+    GemmCuda mult(std::move(A), std::move(B));
     mult.compute();
     EXPECT_FLOAT_EQ(mult.get()->lInfNorm(*C), 0.0);
 }
