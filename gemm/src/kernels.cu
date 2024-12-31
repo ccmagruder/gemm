@@ -9,7 +9,7 @@ __global__ void __sgemm(const int M,
                         float* c) {
     const int i = blockIdx.x * blockDim.x + threadIdx.x;
     const int j = blockIdx.y * blockDim.y + threadIdx.y;
-    if (i > M || j > N)
+    if (i >= M || j >= N)
         return;
 
     int aid, bid, cid = i + j * M;
