@@ -6,22 +6,55 @@ __global__ void __sgemm(const int M,
                         const int K,
                         const float* const A,
                         const float* const B,
-                        float* const C) {
+                        float* const C,
+                        const int tileDim) {
+    const int tid = threadIdx.y * blockDim.x + threadIdx.x;
+    const int block_size = blockDim.x * blockDim.y;
+
     const int i = blockIdx.x * blockDim.x + threadIdx.x;
     const int j = blockIdx.y * blockDim.y + threadIdx.y;
-    if (i >= M || j >= N)
-        return;
 
-    const float* a = A + i;          // a = A[i, 0]
-    const float* b = B + j * K;      // b = B[0, j]
     float* const c = C + i + j * M;  // c = C[i, j]
+
+    extern __shared__ float smem[];
+    float* sA = smem;                         // (blockDim.x, tileDim)
+    float* sB = smem + blockDim.x * tileDim;  // (tileDim, blockDim.y)
+
+    int si;
+    int sj;
     float sum = 0.0;
-    for (int k = 0; k < K; k++) {
-        sum += *a * *b;  // C[i, j] += A[i, k] * B[k, j]
-        a += M;          // A[i, k] -> A[i, k + 1]
-        b++;             // B[k, j] -> B[k + 1, j]
+
+    for (int tileIdx = 0; tileIdx < K / tileDim + (K % tileDim != 0);
+         tileIdx++) {
+        for (int idx = tid; idx < blockDim.x * tileDim; idx += block_size) {
+            si = idx % blockDim.x;
+            sj = idx / blockDim.x;
+            sA[idx] =
+                A[(tileIdx * tileDim + sj) * M + blockIdx.x * blockDim.x + si];
+        }
+
+        for (int idx = tid; idx < tileDim * blockDim.y; idx += block_size) {
+            si = idx % tileDim;
+            sj = idx / tileDim;
+            sB[idx] =
+                B[(blockIdx.y * blockDim.y + sj) * K + tileIdx * tileDim + si];
+        }
+
+        __syncthreads();
+
+        if (i < M && j < N) {
+            for (int k = 0; k < tileDim && tileIdx * tileDim + k < K; k++) {
+                sum += sA[k * blockDim.x + threadIdx.x] *
+                       sB[threadIdx.y * tileDim + k];
+            }
+        }
+
+        __syncthreads();
     }
-    *c = sum;
+
+    if (i < M && j < N) {
+        *c = sum;
+    }
 }
 
 class KernelSettings {
@@ -46,7 +79,21 @@ void sgemm(const int M,
                  N / W + (N % W != 0),  // gridDim.y = CEIL_DIV(N, W)
                  1);                    // gridDim.z = 1
     dim3 blockDim(V, W, 1);
-    __sgemm<<<gridDim, blockDim>>>(M, N, K, A, B, C);
+    // 4 * (blockDim.x * tile_dim + tile_dim * blockDim.y) <= 47 * 1024
+    // tile_dim < 47 * 256 / (blockDim.x + blockDim.y)
+    // const int tile_dim = int(float(47 * 256) / (blockDim.x + blockDim.y));
+    const int tile_dim = 16;
+    const size_t smem_size = (V + W) * tile_dim * sizeof(float);
+    // The maximum memory for the RTX 4070 (Compute Capability 8.9) is 99KB;
+    // however, the default cap is 48KB for hardware compatibility. To
+    // override:
+    // https://docs.nvidia.com/cuda/cuda-c-programming-guide/#shared-memory-7-x
+    const size_t smem_size_max = 99 * 1024;
+    if (smem_size > smem_size_max) {
+        throw std::runtime_error("smem_size > smem_size_max");
+    }
+    setMaxSharedMemory(__sgemm);
+    __sgemm<<<gridDim, blockDim, smem_size>>>(M, N, K, A, B, C, tile_dim);
     cudaDeviceSynchronize();
     cudaCheck(__FILE__, __LINE__);
 }
