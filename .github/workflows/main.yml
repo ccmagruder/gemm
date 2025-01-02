@@ -66,11 +66,10 @@ jobs:
         run: docker compose run --rm devcontainer cmake --build build
 
       - name: clang-tidy
-        run: docker compose run --rm devcontainer bash -c "source /.venv/bin/activate && ./clangd-tidy.sh"
+        run: docker compose run --rm --env PATH=/.venv/bin:$PATH devcontainer ./clangd-tidy.sh
       
       - name: clang-format
-        run: |
-          docker run --rm -v .:/root ccmagruder/devcontainer-gemm:latest bash -c "cd /root && clang-format --dry-run --Werror gemm/**/*.h gemm/**/*.cpp gemm/**/*.cuh gemm/**/*.cu"
+        run: docker compose run --rm devcontainer ./clang-format.sh --dry-run --Werror --verbose
 
       - name: google test
         run: docker compose run --rm devcontainer ctest --test-dir build --output-on-failure
