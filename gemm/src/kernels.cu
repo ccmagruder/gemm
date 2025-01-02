@@ -25,10 +25,7 @@ __global__ void __sgemm(const int M,
     const int i = blockIdx.x * blockDim.x + threadIdx.x;
     const int j = blockIdx.y * blockDim.y + threadIdx.y;
 
-    const float* a = A + i;          // a = A[i, 0]
-    const float* b = B + j * K;      // b = B[0, j]
     float* const c = C + i + j * M;  // c = C[i, j]
-    float sum = 0.0;
 
     extern __shared__ float smem[];
     float* sA = smem;                         // (blockDim.x, tileDim)
@@ -36,6 +33,8 @@ __global__ void __sgemm(const int M,
 
     int si;
     int sj;
+    float sum = 0.0;
+
     for (int tileIdx = 0; tileIdx < K / tileDim + (K % tileDim != 0);
          tileIdx++) {
         for (int idx = tid; idx < blockDim.x * tileDim; idx += block_size) {
@@ -57,10 +56,7 @@ __global__ void __sgemm(const int M,
         if (i < M && j < N) {
             for (int k = 0; k < tileDim && tileIdx * tileDim + k < K; k++) {
                 sum += sA[k * blockDim.x + threadIdx.x] *
-                       sB[threadIdx.y * tileDim +
-                          k];  // C[i, j] += A[i, k] * B[k, j]
-                a += M;        // A[i, k] -> A[i, k + 1]
-                b++;           // B[k, j] -> B[k + 1, j]
+                       sB[threadIdx.y * tileDim + k];
             }
         }
 
@@ -84,10 +80,13 @@ void sgemm(const int M,
                  N / W + (N % W != 0),  // gridDim.y = CEIL_DIV(N, W)
                  1);                    // gridDim.z = 1
     dim3 blockDim(V, W, 1);
+    // 4 * (blockDim.x * tile_dim + tile_dim * blockDim.y) <= 47 * 1024
+    // tile_dim < 47 * 256 / (blockDim.x + blockDim.y)
+    // const int tile_dim = int(float(47 * 256) / (blockDim.x + blockDim.y));
     const int tile_dim = 8;
     const size_t smem_size = (V + W) * tile_dim * sizeof(float);
     // The maximum memory for the RTX 4070 (Compute Capability 8.9) is 99KB;
-    // however, the default capt is 48KB for hardware compatibility. To
+    // however, the default cap is 48KB for hardware compatibility. To
     // override:
     // https://docs.nvidia.com/cuda/cuda-c-programming-guide/#shared-memory-7-x
     const size_t smem_size_max = 48 * 1024;
