@@ -4,7 +4,7 @@ project(gemm)
 
 find_package(GTest REQUIRED)
 
-add_executable(tCuda tCuda.cpp)
+add_executable(tCuda tCuda.cpp test_kernels.cu)
 add_executable(tMatrix tMatrix.cpp)
 add_executable(tGemm tGemm.cpp)
 

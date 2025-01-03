@@ -1,7 +1,5 @@
 #include <stdexcept>
 
-#include "kernels.cuh"
-
 void cudaCheck() {
     cudaError_t code = cudaPeekAtLastError();
     if (code != cudaSuccess) {
