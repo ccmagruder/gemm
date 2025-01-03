@@ -65,6 +65,8 @@ services:
     ports:
       - 8888:8888
     command: bash -c "jupyter lab --allow-root --ip 0.0.0.0"
+    environment:
+      - TZ=America/Chicago
     working_dir: /root/gemm
     volumes:
       - type: bind
