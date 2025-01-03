@@ -4,13 +4,19 @@ project(gemm)
 
 find_package(GTest REQUIRED)
 
+add_executable(tCuda tCuda.cpp test_kernels.cu)
 add_executable(tMatrix tMatrix.cpp)
 add_executable(tGemm tGemm.cpp)
 
+target_link_libraries(tCuda gemm GTest::gtest GTest::gtest_main)
 target_link_libraries(tMatrix gemm GTest::gtest GTest::gtest_main)
 target_link_libraries(tGemm gemm GTest::gtest GTest::gtest_main)
 
 enable_testing()
+
+add_test(NAME tCuda
+         WORKING_DIRECTORY tests
+         COMMAND tCuda)
 
 add_test(NAME tMatrix
          WORKING_DIRECTORY tests
