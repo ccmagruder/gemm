@@ -1,15 +1,28 @@
 #include <stdexcept>
 
-#include "kernels.cuh"
-
-void cudaCheck() {
-    cudaError_t code = cudaPeekAtLastError();
+void cudaCheck(cudaError_t code, const char* file, const int line) {
     if (code != cudaSuccess) {
         char msg[100];
-        sprintf(msg, "GPU kernel assert: %s:%d \"%s\"\n", __FILE__, __LINE__,
+        sprintf(msg, "GPU kernel assert: %s:%d \"%s\"\n", file, line,
                 cudaGetErrorString(code));
         throw std::runtime_error(msg);
     }
+}
+
+void cudaCheck(const char* file, const int line) {
+    cudaError_t code = cudaPeekAtLastError();
+    cudaCheck(code, file, line);
+}
+
+void setMaxSharedMemory(void (*kernel)(void)) {
+    int device;
+    int sharedMemoryPerBlockOptin;
+
+    cudaGetDevice(&device);
+    cudaDeviceGetAttribute(&sharedMemoryPerBlockOptin,
+                           cudaDevAttrMaxSharedMemoryPerBlockOptin, device);
+    cudaFuncSetAttribute(kernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
+                         sharedMemoryPerBlockOptin);
 }
 
 __global__ void __sgemm(const int M,
@@ -49,5 +62,5 @@ void sgemm(const int M,
     dim3 blockDim(V, W, 1);
     __sgemm<<<gridDim, blockDim>>>(M, N, K, A, B, C);
     cudaDeviceSynchronize();
-    cudaCheck();
+    cudaCheck(__FILE__, __LINE__);
 }
