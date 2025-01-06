@@ -1,6 +1,9 @@
 #pragma once
 
-void cudaCheck();
+#include <cuda_runtime.h>
+
+void cudaCheck(const char* file, const int line);
+void cudaCheck(cudaError_t code, const char* file, const int line);
 
 void sgemm(const int M,
            const int N,

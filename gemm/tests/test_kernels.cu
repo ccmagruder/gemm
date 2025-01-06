@@ -23,6 +23,6 @@ void sharedMemoryAlloc() {
     cudaError_t code = cudaMalloc((void**)&ptr, sizeof(float));
     setMaxSharedMemory(__passthrough);
     __passthrough<<<1, 1, 99 * 1024>>>();
-    cudaCheck();
+    cudaCheck(__FILE__, __LINE__);
     cudaFree(ptr);
 }
