@@ -14,6 +14,17 @@ void cudaCheck(const char* file, const int line) {
     cudaCheck(code, file, line);
 }
 
+void setMaxSharedMemory(void (*kernel)(void)) {
+    int device;
+    int sharedMemoryPerBlockOptin;
+
+    cudaGetDevice(&device);
+    cudaDeviceGetAttribute(&sharedMemoryPerBlockOptin,
+                           cudaDevAttrMaxSharedMemoryPerBlockOptin, device);
+    cudaFuncSetAttribute(kernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
+                         sharedMemoryPerBlockOptin);
+}
+
 __global__ void __sgemm(const int M,
                         const int N,
                         const int K,

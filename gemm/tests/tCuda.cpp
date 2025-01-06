@@ -2,7 +2,7 @@
 
 #include <cuda_runtime.h>
 
-void sharedMemoryAlloc();
+void sharedMemoryAlloc(int, bool);
 
 TEST(tCuda, Device) {
     int count = 0, device = -1;
@@ -68,5 +68,9 @@ TEST(tCuda, SharedMemoryPerBlock) {
 }
 
 TEST(tCuda, SharedMemoryOptIn) {
-    sharedMemoryAlloc();
+    sharedMemoryAlloc(48 * 1024, false);
+    EXPECT_THROW(sharedMemoryAlloc(49 * 1024, false), std::runtime_error);
+    sharedMemoryAlloc(49 * 1024, true);
+    sharedMemoryAlloc(99 * 1024, true);
+    EXPECT_THROW(sharedMemoryAlloc(100 * 1024, true), std::runtime_error);
 }

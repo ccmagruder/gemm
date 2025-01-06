@@ -4,25 +4,13 @@ __global__ void __passthrough() {
     extern float* smem[];
 }
 
-// TODO: move to kernels.cu
-void setMaxSharedMemory(void (*kernel)(void)) {
-    int device;
-    int sharedMemoryPerBlockOptin;
-    // TODO: Refactor checkCuda(code, FILE, LINE)
-    // cudaError_t code;
-
-    cudaGetDevice(&device);
-    cudaDeviceGetAttribute(&sharedMemoryPerBlockOptin,
-                           cudaDevAttrMaxSharedMemoryPerBlockOptin, device);
-    cudaFuncSetAttribute(kernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
-                         sharedMemoryPerBlockOptin);
-}
-
-void sharedMemoryAlloc() {
+void sharedMemoryAlloc(int size, bool max_smem) {
     float* ptr;
     cudaError_t code = cudaMalloc((void**)&ptr, sizeof(float));
-    setMaxSharedMemory(__passthrough);
-    __passthrough<<<1, 1, 99 * 1024>>>();
+    cudaCheck(code, __FILE__, __LINE__);
+    if (max_smem)
+        setMaxSharedMemory(__passthrough);
+    __passthrough<<<1, 1, size>>>();
     cudaCheck(__FILE__, __LINE__);
     cudaFree(ptr);
 }
