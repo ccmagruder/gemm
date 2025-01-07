@@ -59,4 +59,5 @@ RUN apt update -y && apt upgrade -y \
   && echo "    gpg --batch --import /root/.private.key" >> ~/.zshrc \
   && echo "fi" >> ~/.zshrc \
   && echo "alias ll=\"ls -alh\"" >> ~/.zshrc \
-  && echo "alias gs=\"git status\"" >> ~/.zshrc
+  && echo "alias gs=\"git status\"" >> ~/.zshrc \
+  && echo "cd /root/gemm" >> ~/.zshrc

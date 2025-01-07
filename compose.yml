@@ -22,7 +22,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: .ide
-    command: zsh
+    command: zsh -c "cd /root/gemm && ~/.tmux/plugins/tpm/scripts/install_plugins.sh && tmux -u new-session -s gemm \"nvim\" \\; split-window"
     environment:
       - TERM=xterm-256color
       - TZ=America/Chicago
