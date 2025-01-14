@@ -93,6 +93,9 @@ void sgemm(const int M,
         tile_dim = static_cast<int>(static_cast<float>(smem_size_max) /
                                     sizeof(float) / (blockDim.x + blockDim.y));
 
+    tile_dim = std::min(tile_dim, K);
+    tile_dim = std::min(tile_dim, 16);
+
     // The maximum memory for the RTX 4070 (Compute Capability 8.9) is 99KB;
     // however, the default cap is 48KB for hardware compatibility. To
     // override:
