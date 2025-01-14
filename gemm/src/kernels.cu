@@ -1,5 +1,7 @@
 #include <stdexcept>
 
+#include "kernels.cuh"
+
 void cudaCheck(cudaError_t code, const char* file, const int line) {
     if (code != cudaSuccess) {
         char msg[100];
@@ -10,19 +12,8 @@ void cudaCheck(cudaError_t code, const char* file, const int line) {
 }
 
 void cudaCheck(const char* file, const int line) {
-    cudaError_t code = cudaPeekAtLastError();
+    cudaError_t code = cudaGetLastError();
     cudaCheck(code, file, line);
-}
-
-void setMaxSharedMemory(void (*kernel)(void)) {
-    int device;
-    int sharedMemoryPerBlockOptin;
-
-    cudaGetDevice(&device);
-    cudaDeviceGetAttribute(&sharedMemoryPerBlockOptin,
-                           cudaDevAttrMaxSharedMemoryPerBlockOptin, device);
-    cudaFuncSetAttribute(kernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
-                         sharedMemoryPerBlockOptin);
 }
 
 __global__ void __sgemm(const int M,
@@ -47,6 +38,16 @@ __global__ void __sgemm(const int M,
     }
     *c = sum;
 }
+
+class KernelSettings {
+   public:
+    KernelSettings() { setMaxSharedMemory(__sgemm); }
+
+   private:
+    static KernelSettings _settings;
+};
+
+KernelSettings KernelSettings::_settings = KernelSettings();
 
 void sgemm(const int M,
            const int N,
