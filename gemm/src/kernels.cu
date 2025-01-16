@@ -26,20 +26,23 @@ __global__ void __sgemm(const int M,
 
     for (int tileIdx = 0; tileIdx < K / tileDim + (K % tileDim != 0);
          tileIdx++) {
-        for (int idx = tid; idx < blockDim.x * min(tileDim, K);
-             idx += block_size) {
+        for (int idx = tid; idx < blockDim.x * tileDim; idx += block_size) {
             si = idx % blockDim.x;
             sj = idx / blockDim.x;
-            sA[idx] =
-                A[(tileIdx * tileDim + sj) * M + blockIdx.x * blockDim.x + si];
+            if ((tileIdx * tileDim + sj) * M + blockIdx.x * blockDim.x + si <
+                M * K)
+                sA[idx] = A[(tileIdx * tileDim + sj) * M +
+                            blockIdx.x * blockDim.x + si];
         }
 
-        for (int idx = tid; idx < min(tileDim, K) * blockDim.y;
-             idx += block_size) {
+        for (int idx = tid; idx < tileDim * blockDim.y; idx += block_size) {
             si = idx % tileDim;
             sj = idx / tileDim;
-            sB[idx] =
-                B[(blockIdx.y * blockDim.y + sj) * K + tileIdx * tileDim + si];
+            if ((blockIdx.y * blockDim.y + sj) * K + tileIdx * tileDim + si <
+                K * N) {
+                sB[idx] = B[(blockIdx.y * blockDim.y + sj) * K +
+                            tileIdx * tileDim + si];
+            }
         }
 
         __syncthreads();
@@ -47,7 +50,7 @@ __global__ void __sgemm(const int M,
         if (i < M && j < N) {
             for (int k = 0; k < tileDim && tileIdx * tileDim + k < K; k++) {
                 sum += sA[k * blockDim.x + threadIdx.x] *
-                       sB[threadIdx.y * min(tileDim, K) + k];
+                       sB[threadIdx.y * tileDim + k];
             }
         }
 
@@ -94,7 +97,6 @@ void sgemm(const int M,
                                     sizeof(float) / (blockDim.x + blockDim.y));
 
     tile_dim = std::min(tile_dim, K);
-    tile_dim = std::min(tile_dim, 16);
 
     // The maximum memory for the RTX 4070 (Compute Capability 8.9) is 99KB;
     // however, the default cap is 48KB for hardware compatibility. To
