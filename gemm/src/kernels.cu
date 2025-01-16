@@ -81,6 +81,7 @@ void sgemm(const int M,
            const int V,
            const int W,
            int tile_dim) {
+    // The maximum memory for the RTX 4070 (Compute Capability 8.9) is 99KB
     const size_t smem_size_max = 99 * 1024;
 
     dim3 gridDim(M / V + (M % V != 0),  // gridDim.x = CEIL_DIV(M, V)
@@ -88,26 +89,27 @@ void sgemm(const int M,
                  1);                    // gridDim.z = 1
     dim3 blockDim(V, W, 1);
 
-    // sizeof(float) * (blockDim.x * tile_dim + tile_dim * blockDim.y) <=
-    // smem_size_max
-
+    // sizeof(float)*(blockDim.x*tile_dim+tile_dim*blockDim.y)<=smem_size_max
     // tile_dim <= smem_size_max / sizeof(float) / (blockDim.x + blockDim.y)
     if (!tile_dim)
         tile_dim = static_cast<int>(static_cast<float>(smem_size_max) /
                                     sizeof(float) / (blockDim.x + blockDim.y));
 
+    // kernel __gemm below assumes tha tile_dim <= K, will segfault otherwise;
+    // there are no performance benefits to tile_time > K regardless
     tile_dim = std::min(tile_dim, K);
+
+    const size_t smem_size = (V + W) * tile_dim * sizeof(float);
+    if (smem_size > smem_size_max) {
+        throw std::runtime_error("smem_size > smem_size_max");
+    }
 
     // The maximum memory for the RTX 4070 (Compute Capability 8.9) is 99KB;
     // however, the default cap is 48KB for hardware compatibility. To
     // override:
     // https://docs.nvidia.com/cuda/cuda-c-programming-guide/#shared-memory-7-x
-    const size_t smem_size = (V + W) * tile_dim * sizeof(float);
-    if (smem_size > smem_size_max) {
-        throw std::runtime_error("smem_size > smem_size_max");
-    }
-    setMaxSharedMemory(__sgemm);
     __sgemm<<<gridDim, blockDim, smem_size>>>(M, N, K, A, B, C, tile_dim);
+
     cudaDeviceSynchronize();
     cudaCheck(__FILE__, __LINE__);
 }
