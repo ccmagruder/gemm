@@ -1,3 +1,5 @@
+#include <stdexcept>
+
 #include "kernels.cuh"
 #include "utils.cuh"
 
@@ -20,37 +22,33 @@ __global__ void __sgemm(const int M,
     float* sA = smem;                         // (blockDim.x, tileDim)
     float* sB = smem + blockDim.x * tileDim;  // (tileDim, blockDim.y)
 
-    int si;
-    int sj;
-    float sum = 0.0;
+    int gIdx;        // global memory index
+    int sIdx;        // shard memory index
+    int tIdx;        // tile index
+    float lC = 0.0;  // local memory partial summation
 
-    for (int tileIdx = 0; tileIdx < K / tileDim + (K % tileDim != 0);
-         tileIdx++) {
-        for (int idx = tid; idx < blockDim.x * tileDim; idx += block_size) {
-            si = idx % blockDim.x;
-            sj = idx / blockDim.x;
-            if ((tileIdx * tileDim + sj) * M + blockIdx.x * blockDim.x + si <
-                M * K)
-                sA[idx] = A[(tileIdx * tileDim + sj) * M +
-                            blockIdx.x * blockDim.x + si];
+    for (tIdx = 0; tIdx < K / tileDim + (K % tileDim != 0); tIdx++) {
+        for (sIdx = tid; sIdx < blockDim.x * tileDim; sIdx += block_size) {
+            gIdx = (tIdx * tileDim + sIdx / blockDim.x) * M +
+                   blockIdx.x * blockDim.x + sIdx % blockDim.x;
+            if (gIdx < M * K)
+                sA[sIdx] = A[gIdx];
         }
 
-        for (int idx = tid; idx < tileDim * blockDim.y; idx += block_size) {
-            si = idx % tileDim;
-            sj = idx / tileDim;
-            if ((blockIdx.y * blockDim.y + sj) * K + tileIdx * tileDim + si <
-                K * N) {
-                sB[idx] = B[(blockIdx.y * blockDim.y + sj) * K +
-                            tileIdx * tileDim + si];
-            }
+        for (sIdx = tid; sIdx < tileDim * blockDim.y; sIdx += block_size) {
+            gIdx = (blockIdx.y * blockDim.y + sIdx / tileDim) * K +
+                   tIdx * tileDim + sIdx % tileDim;
+            if (gIdx < K * N)
+                sB[sIdx] = B[gIdx];
         }
 
         __syncthreads();
 
         if (i < M && j < N) {
-            for (int k = 0; k < tileDim && tileIdx * tileDim + k < K; k++) {
-                sum += sA[k * blockDim.x + threadIdx.x] *
-                       sB[threadIdx.y * tileDim + k];
+            for (sIdx = 0; sIdx < tileDim && tIdx * tileDim + sIdx < K;
+                 sIdx++) {
+                lC += sA[sIdx * blockDim.x + threadIdx.x] *
+                      sB[threadIdx.y * tileDim + sIdx];
             }
         }
 
@@ -58,7 +56,7 @@ __global__ void __sgemm(const int M,
     }
 
     if (i < M && j < N) {
-        *c = sum;
+        *c = lC;
     }
 }
 
