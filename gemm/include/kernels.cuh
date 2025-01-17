@@ -15,6 +15,8 @@ void setMaxSharedMemory(void (*kernel)(Args... args)) {
                            cudaDevAttrMaxSharedMemoryPerBlockOptin, device);
     cudaFuncSetAttribute(kernel, cudaFuncAttributeMaxDynamicSharedMemorySize,
                          sharedMemoryPerBlockOptin);
+    cudaFuncSetAttribute(kernel, cudaFuncAttributePreferredSharedMemoryCarveout,
+                         cudaSharedmemCarveoutMaxShared);
 }
 
 void sgemm(const int M,

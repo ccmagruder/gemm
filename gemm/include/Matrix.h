@@ -3,8 +3,7 @@
 #include <memory>
 
 class Matrix {
-    Matrix(size_t m, size_t n)
-        : m(m), n(n), _host_ptr(new float[m * n]), _dev_ptr(nullptr) {}
+    Matrix(size_t m, size_t n);
 
    public:
     Matrix() = delete;
@@ -26,10 +25,10 @@ class Matrix {
         return (this->_host_ptr.get() + this->m * j)[i];
     }
 
-    const float* const getHostPtr() const { return this->_host_ptr.get(); }
+    const float* getHostPtr() const { return this->_host_ptr.get(); }
     float* getHostPtr() { return this->_host_ptr.get(); }
 
-    const float* const getDevPtr() const { return this->_dev_ptr.get(); }
+    const float* getDevPtr() const { return this->_dev_ptr.get(); }
     float* getDevPtr() { return this->_dev_ptr.get(); }
 
     // Movers
