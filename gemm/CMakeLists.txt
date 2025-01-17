@@ -22,6 +22,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
         ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmCuda.cpp
         ${CMAKE_SOURCE_DIR}/src/kernels.cu
+        ${CMAKE_SOURCE_DIR}/src/utils.cu
     )
 else()
     add_library(gemm SHARED
@@ -33,6 +34,7 @@ else()
         ${CMAKE_SOURCE_DIR}/src/GemmMkl.cpp
         ${CMAKE_SOURCE_DIR}/src/GemmCuda.cpp
         ${CMAKE_SOURCE_DIR}/src/kernels.cu
+        ${CMAKE_SOURCE_DIR}/src/utils.cu
     )
 endif()
 

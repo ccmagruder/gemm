@@ -1,5 +1,5 @@
 #include "Matrix.h"
-#include "kernels.cuh"
+#include "utils.cuh"
 
 void Matrix::DevDeleter::operator()(float* devPtr) {
     if (devPtr) {

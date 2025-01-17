@@ -1,4 +1,4 @@
-#include "kernels.cuh"
+#include "utils.cuh"
 
 __global__ void __passthrough() {
     extern float* smem[];
