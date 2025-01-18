@@ -1,20 +1,5 @@
-#include <stdexcept>
-
 #include "kernels.cuh"
-
-void cudaCheck(cudaError_t code, const char* file, const int line) {
-    if (code != cudaSuccess) {
-        char msg[100];
-        sprintf(msg, "GPU kernel assert: %s:%d \"%s\"\n", file, line,
-                cudaGetErrorString(code));
-        throw std::runtime_error(msg);
-    }
-}
-
-void cudaCheck(const char* file, const int line) {
-    cudaError_t code = cudaGetLastError();
-    cudaCheck(code, file, line);
-}
+#include "utils.cuh"
 
 __global__ void __sgemm(const int M,
                         const int N,
