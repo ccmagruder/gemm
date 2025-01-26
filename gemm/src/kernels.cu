@@ -100,6 +100,18 @@ __global__ void __sgemm(const int M,
     }
 }
 
+class KernelSettings {
+   public:
+    KernelSettings() { setMaxSharedMemory(__sgemm); }
+    // The maximum memory for the RTX 4070 (Compute Capability 8.9) is 99KB
+    static constexpr size_t SMEM_SIZE_MAX = 99 * 1024;
+
+   private:
+    static KernelSettings _settings;
+};
+
+KernelSettings KernelSettings::_settings = KernelSettings();
+
 void sgemm(const int M,
            const int N,
            const int K,
@@ -109,9 +121,6 @@ void sgemm(const int M,
            const int V,
            const int W,
            int tile_dim) {
-    // The maximum memory for the RTX 4070 (Compute Capability 8.9) is 99KB
-    const size_t smem_size_max = 99 * 1024;
-
     dim3 gridDim(M / V + (M % V != 0),  // gridDim.x = CEIL_DIV(M, V)
                  N / W + (N % W != 0),  // gridDim.y = CEIL_DIV(N, W)
                  1);                    // gridDim.z = 1
@@ -120,16 +129,16 @@ void sgemm(const int M,
     // sizeof(float)*(blockDim.x*tile_dim+tile_dim*blockDim.y)<=smem_size_max
     // tile_dim <= smem_size_max / sizeof(float) / (blockDim.x + blockDim.y)
     if (!tile_dim)
-        tile_dim = static_cast<int>(static_cast<float>(smem_size_max) /
-                                    sizeof(float) / (blockDim.x + blockDim.y));
+        tile_dim = KernelSettings::SMEM_SIZE_MAX / sizeof(float) /
+                   (blockDim.x + blockDim.y);
 
     // kernel __gemm below assumes tha tile_dim <= K, will segfault otherwise;
     // there are no performance benefits to tile_time > K regardless
     tile_dim = std::min(tile_dim, K);
 
     const size_t smem_size = (V + W) * tile_dim * sizeof(float);
-    if (smem_size > smem_size_max) {
-        throw std::runtime_error("smem_size > smem_size_max");
+    if (smem_size > KernelSettings::SMEM_SIZE_MAX) {
+        throw std::runtime_error("smem_size > SMEM_SIZE_MAX");
     }
 
     // The maximum memory for the RTX 4070 (Compute Capability 8.9) is 99KB;
@@ -141,13 +150,3 @@ void sgemm(const int M,
     cudaDeviceSynchronize();
     cudaCheck(__FILE__, __LINE__);
 }
-
-class KernelSettings {
-   public:
-    KernelSettings() { setMaxSharedMemory(__sgemm); }
-
-   private:
-    static KernelSettings _settings;
-};
-
-KernelSettings KernelSettings::_settings = KernelSettings();
