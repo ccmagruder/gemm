@@ -51,7 +51,17 @@ class tGemmCudaVsRef : public testing::TestWithParam<
     std::shared_ptr<Matrix> Cref;
 };
 
-TEST_P(tGemmCudaVsRef, lInfError) {
+TEST_P(tGemmCudaVsRef, lInfErrorGemmNaive) {
+    const std::tuple<int, int> blockDim = std::get<3>(GetParam());
+    GemmCuda multCuda(this->A->copy(), this->B->copy());
+    multCuda._setup();
+    multCuda.__run_naive(std::get<0>(blockDim), std::get<1>(blockDim));
+    multCuda._teardown();
+    std::shared_ptr<Matrix> C = multCuda.get();
+    EXPECT_NEAR(C->lInfNorm(*this->Cref), 0.0, 1e-5);
+}
+
+TEST_P(tGemmCudaVsRef, lInfErrorGemm) {
     const std::tuple<int, int> blockDim = std::get<3>(GetParam());
     GemmCuda multCuda(this->A->copy(), this->B->copy());
     multCuda._setup();
