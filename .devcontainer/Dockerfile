@@ -11,6 +11,7 @@ RUN apt update -y && apt upgrade -y \
     git \
     intel-mkl \
     libbenchmark-dev \
+    libgflags-dev \
     libgtest-dev \
     # Dependency for intel-mkl
     libomp-dev \
