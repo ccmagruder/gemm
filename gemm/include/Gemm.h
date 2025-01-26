@@ -25,4 +25,5 @@ class GemmCuda : public Gemm<Device> {
     using Gemm<Device>::Gemm;
     void _run() override { this->__run(32, 32); }
     void __run(const uint V, const uint W);
+    void __run_naive(const uint V, const uint W);
 };

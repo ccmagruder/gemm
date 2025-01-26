@@ -17,13 +17,27 @@ class GemmSweepFixture : public benchmark::Fixture {
     std::unique_ptr<GemmCuda> mult;
 };
 
-BENCHMARK_DEFINE_F(GemmSweepFixture, bCudaBlockSize)(benchmark::State& state) {
+BENCHMARK_DEFINE_F(GemmSweepFixture, bCudaNaive)(benchmark::State& state) {
+    for (auto _ : state) {
+        this->mult->__run_naive(state.range(0), state.range(1));
+    }
+}
+
+BENCHMARK_REGISTER_F(GemmSweepFixture, bCudaNaive)
+    ->Args({1, 1})
+    ->Args({1, 32})
+    ->Args({1, 1024})
+    ->Args({32, 1})
+    ->Args({32, 32})
+    ->Args({1024, 1});
+
+BENCHMARK_DEFINE_F(GemmSweepFixture, bCudaSmemTiled)(benchmark::State& state) {
     for (auto _ : state) {
         this->mult->__run(state.range(0), state.range(1));
     }
 }
 
-BENCHMARK_REGISTER_F(GemmSweepFixture, bCudaBlockSize)
+BENCHMARK_REGISTER_F(GemmSweepFixture, bCudaSmemTiled)
     ->Args({1, 1})
     ->Args({1, 32})
     ->Args({1, 1024})
