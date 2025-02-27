@@ -61,6 +61,14 @@ find_library(MKL mkl_rt)
 
 target_link_libraries(gemm ${MKL})
 
+################ main ###################
+
+find_package(gflags COMPONENTS nothreads_static)
+
+add_executable(main ${CMAKE_SOURCE_DIR}/src/main.cpp)
+
+target_link_libraries(main gemm gflags)
+
 ################ TESTS ##################
 add_subdirectory(tests)
 
