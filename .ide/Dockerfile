@@ -33,9 +33,9 @@ RUN apt update -y && apt upgrade -y \
   && sed -i -e 's/robbyrussell/agnoster/' /root/.zshrc \
   && echo "cd /root" >> /root/.zshrc \
   # Install neovim
-  && curl -O -L https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz \
-  && tar xzvf nvim-linux64.tar.gz -C /usr/local/ --strip-components=1 \
-  && rm nvim-linux64.tar.gz \
+  && curl -O -L https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.tar.gz \
+  && tar xzvf nvim-linux-x86_64.tar.gz -C /usr/local/ --strip-components=1 \
+  && rm nvim-linux-x86_64.tar.gz \
   # Install tmux plugin manager
   && git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm \
   && echo "if [ ! -f /root/.tmux/tpm_loaded ]; then" >> ~/.zshrc \
