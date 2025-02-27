@@ -26,6 +26,9 @@ add_test(NAME tGemm
          WORKING_DIRECTORY tests
          COMMAND tGemm)
 
+add_test(NAME main
+         COMMAND main -M 256 -K 128 -N 64)
+
 # Performance Tests
 
 find_package(benchmark REQUIRED)
