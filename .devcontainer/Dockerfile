@@ -21,4 +21,8 @@ RUN apt update -y && apt upgrade -y \
     python3-venv \
   && rm -rf /var/lib/apt/lists/* \
   && python3 -m venv /.venv \
-  && PATH=/.venv/bin:$PATH pip install clangd-tidy
+  && PATH=/.venv/bin:$PATH pip install \
+    clangd-tidy \
+    pytest \
+    polars
+
