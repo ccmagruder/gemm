@@ -25,4 +25,3 @@ RUN apt update -y && apt upgrade -y \
     clangd-tidy \
     pytest \
     polars
-
