@@ -44,7 +44,7 @@ RUN apt update -y && apt upgrade -y \
   && echo "fi" >> ~/.zshrc \
   # Configure python provider
   && python3 -m venv /.venv \
-  && PATH=/.venv/bin:$PATH pip install jupyter-client neovim \
+  && PATH=/.venv/bin:$PATH pip install jupyter-client neovim pyright\
   && echo "source /.venv/bin/activate" >> ~/.zshrc \
   # Configure node provider
   && npm install -g neovim \
