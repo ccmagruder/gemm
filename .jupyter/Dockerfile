@@ -5,6 +5,6 @@ RUN pip install \
     jupyterlab \
     jupyterlab-vim \
     matplotlib \
-    pandas \
     papermill \
+    polars \
     seaborn

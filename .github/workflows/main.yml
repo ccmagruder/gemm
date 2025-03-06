@@ -104,6 +104,10 @@ jobs:
         run: |
           chmod +x bGemm bGemmSweep
           docker compose run --rm devcontainer ./benchmark.sh .
+
+      - name: pytest
+        run: docker compose run --rm --env PATH=/.venv/bin:$PATH devcontainer python -m pytest
+
       - name: upload benchmark json results
         uses: actions/upload-artifact@v4
         with:

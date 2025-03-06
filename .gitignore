@@ -6,3 +6,5 @@ build/
 build-release/
 compile_commands.json
 *.json
+__pycache__
+.pytest_cache
