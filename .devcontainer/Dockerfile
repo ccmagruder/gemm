@@ -24,4 +24,5 @@ RUN apt update -y && apt upgrade -y \
   && PATH=/.venv/bin:$PATH pip install \
     clangd-tidy \
     pytest \
-    polars
+    polars \
+    seaborn
