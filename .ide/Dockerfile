@@ -42,6 +42,8 @@ RUN apt update -y && apt upgrade -y \
   && echo "    ~/.tmux/plugins/tpm/scripts/install_plugins.sh \\" >> ~/.zshrc \
   && echo "        && touch /root/.tmux/tpm_loaded" >> ~/.zshrc \
   && echo "fi" >> ~/.zshrc \
+  # Install yaml-language-server
+  && npm install -g yaml-language-server \
   # Configure python provider
   && python3 -m venv /.venv \
   && PATH=/.venv/bin:$PATH pip install jupyter-client neovim pyright\
